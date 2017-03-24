@@ -186,46 +186,43 @@ namespace UnityStandardAssets.Characters.FirstPerson
                             Debug.Log("WallRunning engaged");
                             wallRunTimer += Time.fixedDeltaTime;
                             isWallRunning = true;
-                            m_MoveDir.x = m_JumpSpeed * transform.forward.x;
                             m_MoveDir.y = m_JumpSpeed;
-                            m_MoveDir.z = m_JumpSpeed * transform.forward.z;
                             if (IsWallToRight()){
-                                wallDirection = GetRightWallDirection();
+                                wallDirection = GetRightWallForward();
                                 if ( wallDirection != new Vector3()) {
-                                    wallDirection = Vector3.Project(transform.right, wallDirection);
-                                    m_MoveDir.x += m_JumpSpeed * wallDirection.x;
-                                    m_MoveDir.z += m_JumpSpeed * wallDirection.z;
+                                    wallDirection = Vector3.Project(transform.forward, wallDirection);
+                                    m_MoveDir.x = m_JumpSpeed * wallDirection.x;
+                                    m_MoveDir.z = m_JumpSpeed * wallDirection.z;
                                 }
                             } else {
-                                wallDirection = GetLeftWallDirection();
+                                wallDirection = GetLeftWallForward();
                                 if ( wallDirection != new Vector3()) {
-                                    wallDirection = Vector3.Project(transform.right, wallDirection);
-                                    m_MoveDir.x += - m_JumpSpeed * wallDirection.x;
-                                    m_MoveDir.z += - m_JumpSpeed * wallDirection.z;
+                                    wallDirection = Vector3.Project(transform.forward, wallDirection);
+                                    m_MoveDir.x = m_JumpSpeed * wallDirection.x;
+                                    m_MoveDir.z = m_JumpSpeed * wallDirection.z;
                                 }
                             }
                         } else {
                             if(IsWallToLeftOrRight() && !m_IsWalking){
                                 wallRunTimer += Time.fixedDeltaTime;
                                 if (wallRunTimer > 0.5f){
-                                    m_MoveDir.x = 2 * m_JumpSpeed * transform.forward.x;
-                                    m_MoveDir.z = 2 * m_JumpSpeed * transform.forward.z;
                                     m_MoveDir -= 0.5f * Physics.gravity*m_GravityMultiplier*Time.fixedDeltaTime;
-                                }
-                                if (IsWallToRight()){
-                                    wallDirection = GetRightWallDirection();
-                                    if ( wallDirection != new Vector3()) {
-                                        wallDirection = Vector3.Project(transform.right, wallDirection);
-                                        m_MoveDir.x += m_JumpSpeed * wallDirection.x;
-                                        m_MoveDir.z += m_JumpSpeed * wallDirection.z;
+                                    if (IsWallToRight()){
+                                        wallDirection = GetRightWallForward();
+                                        if ( wallDirection != new Vector3()) {
+                                            wallDirection = Vector3.Project(transform.forward, wallDirection);
+                                            m_MoveDir.x = 2 * m_JumpSpeed * wallDirection.x;
+                                            m_MoveDir.z = 2 * m_JumpSpeed * wallDirection.z;
+                                        }
+                                    } else {
+                                        wallDirection = GetLeftWallForward();
+                                        if ( wallDirection != new Vector3()) {
+                                            wallDirection = Vector3.Project(transform.forward, wallDirection);
+                                            m_MoveDir.x = 2 * m_JumpSpeed * wallDirection.x;
+                                            m_MoveDir.z = 2 * m_JumpSpeed * wallDirection.z;
+                                        }
                                     }
-                                } else {
-                                    wallDirection = GetLeftWallDirection();
-                                    if ( wallDirection != new Vector3()) {
-                                        wallDirection = Vector3.Project(transform.right, wallDirection);
-                                        m_MoveDir.x += - m_JumpSpeed * wallDirection.x;
-                                        m_MoveDir.z += - m_JumpSpeed * wallDirection.z;
-                                    }
+
                                 }
                             }
                         }
@@ -378,9 +375,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
             bool wallOnLeft = Physics.Raycast(new Vector3( transform.position.x, transform.position.y, transform.position.z ), -transform.right, rayCastLengthCheck, layer);
             Debug.DrawRay(new Vector3 (transform.position.x, transform.position.y, transform.position.z), -transform.right * rayCastLengthCheck, Color.red);
             return wallOnLeft;
-            //return wallOnLeft;
         }
-        private Vector3 GetLeftWallDirection() {
+
+        //return the direction of the wall's normal
+        private Vector3 GetLeftWallNormal() {
             RaycastHit hit;
             GameObject wallInContact;
             if (Physics.Raycast(new Vector3( transform.position.x, transform.position.y, transform.position.z ), -transform.right, out hit, 10f * rayCastLengthCheck, layer)) {
@@ -390,12 +388,33 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 return new Vector3();
             }
         }
-        private Vector3 GetRightWallDirection() {
+        //return the direction of the wall's normal
+        private Vector3 GetRightWallNormal() {
             RaycastHit hit;
             GameObject wallInContact;
             if (Physics.Raycast(new Vector3( transform.position.x, transform.position.y, transform.position.z ), transform.right, out hit, 10f * rayCastLengthCheck, layer)) {
                     wallInContact = hit.collider.gameObject;
                     return wallInContact.transform.right;
+            } else {
+                return new Vector3();
+            }
+        }
+        private Vector3 GetLeftWallForward() {
+            RaycastHit hit;
+            GameObject wallInContact;
+            if (Physics.Raycast(new Vector3( transform.position.x, transform.position.y, transform.position.z ), -transform.right, out hit, 10f * rayCastLengthCheck, layer)) {
+                    wallInContact = hit.collider.gameObject;
+                    return wallInContact.transform.forward;
+            } else {
+                return new Vector3();
+            }
+        }
+        private Vector3 GetRightWallForward() {
+            RaycastHit hit;
+            GameObject wallInContact;
+            if (Physics.Raycast(new Vector3( transform.position.x, transform.position.y, transform.position.z ), transform.right, out hit, 10f * rayCastLengthCheck, layer)) {
+                    wallInContact = hit.collider.gameObject;
+                    return wallInContact.transform.forward;
             } else {
                 return new Vector3();
             }

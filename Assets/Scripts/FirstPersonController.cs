@@ -45,15 +45,22 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         public float radius;
         private float rayCastLengthCheck;
-        private GameObject wallInContact;
         public LayerMask layer;
         public Boolean isWallRunning;
         public float wallRunTimer;
+        public Boolean hasJustWallJumped;
+        public float wallJumpReset;
+        public float wallJumpTimer;
+        public Vector3 wallDirection;
 
         // Use this for initialization
         private void Start()
         {
+            wallDirection = new Vector3();
             isWallRunning = false;
+            hasJustWallJumped = false;
+            wallJumpTimer = 0f;
+            wallJumpReset = 0.2f;
             m_CharacterController = GetComponent<CharacterController>();
             radius = m_CharacterController.radius;
             rayCastLengthCheck = radius + 0.5f;
@@ -124,6 +131,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_MoveDir.x = desiredMove.x*speed;
                 m_MoveDir.z = desiredMove.z*speed;
             }
+            if (hasJustWallJumped){
+                if(wallJumpTimer < wallJumpReset ){
+                    wallJumpTimer += Time.fixedDeltaTime;
+                } else {
+                    wallJumpTimer = 0f;
+                    hasJustWallJumped = false;
+                }
+            }
+
             if (m_CharacterController.isGrounded)
             {
                 m_MoveDir.y = -m_StickToGroundForce;
@@ -141,6 +157,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 if (m_Jump && IsWallToLeftOrRight()){
                     PlayJumpSound();
                     isWallRunning = false;
+                    hasJustWallJumped = true;
                     m_Jump = false;
                     m_Jumping = true;
                     m_MoveDir.y = m_JumpSpeed;
@@ -154,25 +171,65 @@ namespace UnityStandardAssets.Characters.FirstPerson
                         m_MoveDir.z = m_JumpSpeed * transform.right.z;
                         Debug.Log("Wall on Left");
                     }
+                    m_MoveDir.x += m_JumpSpeed * transform.forward.x;
+                    m_MoveDir.z += m_JumpSpeed * transform.forward.z;
                 } else {
                     //Moment when the WallRun must be initiated.
                     //Must give a new speed to the player
-                    //Must be done only once
-                    if (IsWallToLeftOrRight() && !m_IsWalking && !isWallRunning){
-                        Debug.Log("WallRunning engaged");
-                        isWallRunning = true;
-                        m_MoveDir.x = m_JumpSpeed * transform.forward.x;
-                        m_MoveDir.y = m_JumpSpeed;
-                        m_MoveDir.z = m_JumpSpeed * transform.forward.z;
-                    } else {
-                        if(IsWallToLeftOrRight() && !m_IsWalking){
+                    //Conditions to initiate a wallRun:
+                    // => Must be on a wall
+                    // => Must be running
+                    // => Must not already be wallRunning
+                    // => Must not have wallJumped on the last frame
+                    if(!hasJustWallJumped){
+                        if (IsWallToLeftOrRight() && !m_IsWalking && !isWallRunning){
+                            Debug.Log("WallRunning engaged");
                             wallRunTimer += Time.fixedDeltaTime;
-                            if (wallRunTimer > 0.5f){
-                                m_MoveDir.x = 2 * m_JumpSpeed * transform.forward.x;
-                                m_MoveDir.z = 2 * m_JumpSpeed * transform.forward.z;
-                                m_MoveDir -= 0.5f * Physics.gravity*m_GravityMultiplier*Time.fixedDeltaTime;
+                            isWallRunning = true;
+                            m_MoveDir.x = m_JumpSpeed * transform.forward.x;
+                            m_MoveDir.y = m_JumpSpeed;
+                            m_MoveDir.z = m_JumpSpeed * transform.forward.z;
+                            if (IsWallToRight()){
+                                wallDirection = GetRightWallDirection();
+                                if ( wallDirection != new Vector3()) {
+                                    wallDirection = Vector3.Project(transform.right, wallDirection);
+                                    m_MoveDir.x += m_JumpSpeed * wallDirection.x;
+                                    m_MoveDir.z += m_JumpSpeed * wallDirection.z;
+                                }
+                            } else {
+                                wallDirection = GetLeftWallDirection();
+                                if ( wallDirection != new Vector3()) {
+                                    wallDirection = Vector3.Project(transform.right, wallDirection);
+                                    m_MoveDir.x += - m_JumpSpeed * wallDirection.x;
+                                    m_MoveDir.z += - m_JumpSpeed * wallDirection.z;
+                                }
+                            }
+                        } else {
+                            if(IsWallToLeftOrRight() && !m_IsWalking){
+                                wallRunTimer += Time.fixedDeltaTime;
+                                if (wallRunTimer > 0.5f){
+                                    m_MoveDir.x = 2 * m_JumpSpeed * transform.forward.x;
+                                    m_MoveDir.z = 2 * m_JumpSpeed * transform.forward.z;
+                                    m_MoveDir -= 0.5f * Physics.gravity*m_GravityMultiplier*Time.fixedDeltaTime;
+                                }
+                                if (IsWallToRight()){
+                                    wallDirection = GetRightWallDirection();
+                                    if ( wallDirection != new Vector3()) {
+                                        wallDirection = Vector3.Project(transform.right, wallDirection);
+                                        m_MoveDir.x += m_JumpSpeed * wallDirection.x;
+                                        m_MoveDir.z += m_JumpSpeed * wallDirection.z;
+                                    }
+                                } else {
+                                    wallDirection = GetLeftWallDirection();
+                                    if ( wallDirection != new Vector3()) {
+                                        wallDirection = Vector3.Project(transform.right, wallDirection);
+                                        m_MoveDir.x += - m_JumpSpeed * wallDirection.x;
+                                        m_MoveDir.z += - m_JumpSpeed * wallDirection.z;
+                                    }
+                                }
                             }
                         }
+
                     }
                     m_MoveDir += Physics.gravity*m_GravityMultiplier*Time.fixedDeltaTime;
                 }
@@ -308,19 +365,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             body.AddForceAtPosition(m_CharacterController.velocity*0.1f, hit.point, ForceMode.Impulse);
         }
 
-        // public bool IsWallToLeftOrRight()
-        // {
-            // bool wallOnleft = Physics2D.Raycast(new Vector2( transform.position.x - width, transform.position.y), -Vector2.right, rayCastLengthCheck);
-            // bool wallOnRight = Physics2D.Raycast(new Vector2(transform.position.x + width, transform.position.y),Vector2.right, rayCastLengthCheck);
-            // if (wallOnleft || wallOnRight)
-            //   {
-            //     return true;
-            //   }
-            // else {
-            //   return false;
-            // }
-        // }
-
         private Boolean IsWallToLeftOrRight(){
             //Debug.Log(mask);
             return (IsWallToLeft() || IsWallToRight());
@@ -335,6 +379,26 @@ namespace UnityStandardAssets.Characters.FirstPerson
             Debug.DrawRay(new Vector3 (transform.position.x, transform.position.y, transform.position.z), -transform.right * rayCastLengthCheck, Color.red);
             return wallOnLeft;
             //return wallOnLeft;
+        }
+        private Vector3 GetLeftWallDirection() {
+            RaycastHit hit;
+            GameObject wallInContact;
+            if (Physics.Raycast(new Vector3( transform.position.x, transform.position.y, transform.position.z ), -transform.right, out hit, 10f * rayCastLengthCheck, layer)) {
+                    wallInContact = hit.collider.gameObject;
+                    return wallInContact.transform.right;
+            } else {
+                return new Vector3();
+            }
+        }
+        private Vector3 GetRightWallDirection() {
+            RaycastHit hit;
+            GameObject wallInContact;
+            if (Physics.Raycast(new Vector3( transform.position.x, transform.position.y, transform.position.z ), transform.right, out hit, 10f * rayCastLengthCheck, layer)) {
+                    wallInContact = hit.collider.gameObject;
+                    return wallInContact.transform.right;
+            } else {
+                return new Vector3();
+            }
         }
         // private void OnTriggerEnter(Collider other){
         //   if (other.gameObject.transform.name == "Wall"){

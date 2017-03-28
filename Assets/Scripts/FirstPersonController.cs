@@ -61,6 +61,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             hasJustWallJumped = false;
             wallJumpTimer = 0f;
             wallJumpReset = 0.2f;
+
             m_CharacterController = GetComponent<CharacterController>();
             radius = m_CharacterController.radius;
             rayCastLengthCheck = radius + 0.5f;
@@ -80,9 +81,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private void Update()
         {
             RotateView();
-            // the jump state needs to read here to make sure it is not missed
-            // listening to the player's input
-            // Means: player want to jump: true / false ?
             if (m_CharacterController.isGrounded || IsWallToLeftOrRight())
             {
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
@@ -419,6 +417,13 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 return new Vector3();
             }
         }
+        // private Vector3 GetWallVector(String side, String direction) {
+        //     RaycastHit hit;
+        //     GameObject wallInContact;
+        //     if (Physics)
+        //
+        //     return new Vector3();
+        // }
         // private void OnTriggerEnter(Collider other){
         //   if (other.gameObject.transform.name == "Wall"){
         //     Debug.Log("Touching the wall");

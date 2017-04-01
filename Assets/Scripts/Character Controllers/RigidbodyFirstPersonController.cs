@@ -89,6 +89,16 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private Vector3 m_GroundContactNormal;
         private bool m_Jump, m_PreviouslyGrounded, m_Jumping, m_IsGrounded;
 
+        public float radius;
+        public float rayCastLengthCheck;
+        public LayerMask layer;
+        public Boolean isWallRunning;
+        public float wallRunTimer;
+        public Boolean hasJustWallJumped;
+        public float wallJumpReset;
+        public float wallJumpTimer;
+        public Vector3 wallDirection;
+
 
         public Vector3 Velocity
         {
@@ -123,6 +133,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_RigidBody = GetComponent<Rigidbody>();
             m_Capsule = GetComponent<CapsuleCollider>();
             mouseLook.Init (transform, cam.transform);
+
+            radius = m_Capsule.radius;
+            wallDirection = new Vector3();
+            isWallRunning = false;
+            hasJustWallJumped = false;
+            wallJumpTimer = 0f;
+            wallJumpReset = 0.2f;
+            rayCastLengthCheck =  radius + 0.5f;
         }
 
 
@@ -147,15 +165,43 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 // always move along the camera forward as it is the direction that it being aimed at
                 Vector3 desiredMove = cam.transform.forward*input.y + cam.transform.right*input.x;
                 desiredMove = Vector3.ProjectOnPlane(desiredMove, m_GroundContactNormal).normalized;
-
-                desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed;
-                desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed;
-                desiredMove.y = desiredMove.y*movementSettings.CurrentTargetSpeed;
-                if (m_RigidBody.velocity.sqrMagnitude <
-                    (movementSettings.CurrentTargetSpeed*movementSettings.CurrentTargetSpeed))
-                {
-                    m_RigidBody.AddForce(desiredMove*SlopeMultiplier(), ForceMode.Impulse);
+                if (m_IsGrounded){
+                    desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed;
+                    desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed;
+                } else {
+                    if (isWallRunning){
+                        desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed * 0.1f;
+                        desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed * 0.1f;
+                    } else {
+                        desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed * 0.2f;
+                        desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed * 0.2f;
+                    }
                 }
+                desiredMove.y = desiredMove.y*movementSettings.CurrentTargetSpeed;
+                if ( input.y >= 0){
+                    if (m_RigidBody.velocity.sqrMagnitude >=
+                        (movementSettings.CurrentTargetSpeed*movementSettings.CurrentTargetSpeed))
+                    {
+                        if (!m_IsGrounded){
+                            if (isWallRunning){
+                                if (m_Jump){
+                                    Debug.Log("Forward for wall Jump");
+                                }
+                                else {
+                                    if (IsWallToLeft()){
+                                        desiredMove = Vector3.Project(desiredMove, GetLeftWallForward());
+                                    } else {
+                                        desiredMove = Vector3.Project(desiredMove, GetRightWallForward());
+                                    }
+                                }
+                            } else {
+                                desiredMove = Vector3.Project(desiredMove, cam.transform.right);
+                            }
+                        } else { desiredMove = new Vector3();}
+                    }
+                }
+                m_RigidBody.AddForce(desiredMove*SlopeMultiplier(), ForceMode.Impulse);
+
             }
 
             if (m_IsGrounded)
@@ -178,6 +224,31 @@ namespace UnityStandardAssets.Characters.FirstPerson
             else
             {
                 m_RigidBody.drag = 0f;
+                // Initialize Wall Ride
+                // wall near + running + Not already wall running
+                if (IsWallToLeftOrRight() && movementSettings.Running && !isWallRunning){
+                    Debug.Log("Wall ride initialized");
+                    m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
+                    m_RigidBody.AddForce(new Vector3(0f, movementSettings.JumpForce, 0f), ForceMode.Impulse);
+                    m_Jumping = true;
+                    isWallRunning = true;
+                } else {
+                    if (!IsWallToLeftOrRight()){
+                        isWallRunning = false;
+                    }
+                }
+                //Allow wall jumps
+                //Give a force up and forwards
+                if (isWallRunning && m_Jump){
+                    Debug.Log("Wall Jump");
+                    hasJustWallJumped = true;
+                    Vector3 forward = cam.transform.forward;
+                    forward = Vector3.ProjectOnPlane(forward, Vector3.up);
+                    forward = Vector3.Scale( new Vector3(m_RigidBody.velocity.magnitude*3, 0f, m_RigidBody.velocity.magnitude*3), forward);
+                    Vector3 jump = new Vector3(0f, movementSettings.JumpForce, 0f);
+                    m_RigidBody.AddForce(forward + jump, ForceMode.Impulse);
+                }
+                // Landing
                 if (m_PreviouslyGrounded && !m_Jumping)
                 {
                     StickToGroundHelper();
@@ -211,7 +282,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private Vector2 GetInput()
         {
-            
+
             Vector2 input = new Vector2
                 {
                     x = CrossPlatformInputManager.GetAxis("Horizontal"),
@@ -232,7 +303,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             mouseLook.LookRotation (transform, cam.transform);
 
-            if (m_IsGrounded || advancedSettings.airControl)
+            if (m_IsGrounded)
             {
                 // Rotate the rigidbody velocity to match the new direction that the character is looking
                 Quaternion velRotation = Quaternion.AngleAxis(transform.eulerAngles.y - oldYRotation, Vector3.up);
@@ -259,6 +330,44 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if (!m_PreviouslyGrounded && m_IsGrounded && m_Jumping)
             {
                 m_Jumping = false;
+            }
+        }
+        private Boolean IsWallToLeftOrRight(){
+            //Debug.Log(mask);
+            return (IsWallToLeft() || IsWallToRight());
+        }
+        private Boolean IsWallToRight(){
+            bool wallOnRight = Physics.Raycast(new Vector3( transform.position.x, transform.position.y, transform.position.z ), transform.right, rayCastLengthCheck, layer);
+            Debug.DrawRay(new Vector3( transform.position.x, transform.position.y, transform.position.z ), transform.right * rayCastLengthCheck, Color.green);
+            //Debug.Log("Wall on right:" + wallOnRight);
+            return wallOnRight;
+        }
+        private Boolean IsWallToLeft(){
+            bool wallOnLeft = Physics.Raycast(new Vector3( transform.position.x, transform.position.y, transform.position.z ), -transform.right, rayCastLengthCheck, layer);
+            Debug.DrawRay(new Vector3 (transform.position.x, transform.position.y, transform.position.z), -transform.right * rayCastLengthCheck, Color.red);
+            //Debug.Log("Wall on left:" + wallOnLeft);
+            return wallOnLeft;
+        }
+        // return a parallel vector to the wall on the left
+        private Vector3 GetLeftWallForward() {
+            RaycastHit hit;
+            GameObject wallInContact;
+            if (Physics.Raycast(new Vector3( transform.position.x, transform.position.y, transform.position.z ), -transform.right, out hit, 10f * rayCastLengthCheck, layer)) {
+                    wallInContact = hit.collider.gameObject;
+                    return wallInContact.transform.forward;
+            } else {
+                return new Vector3();
+            }
+        }
+        // return a parallel vector to the wall on the right
+        private Vector3 GetRightWallForward() {
+            RaycastHit hit;
+            GameObject wallInContact;
+            if (Physics.Raycast(new Vector3( transform.position.x, transform.position.y, transform.position.z ), transform.right, out hit, 10f * rayCastLengthCheck, layer)) {
+                    wallInContact = hit.collider.gameObject;
+                    return wallInContact.transform.forward;
+            } else {
+                return new Vector3();
             }
         }
     }

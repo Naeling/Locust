@@ -86,7 +86,10 @@
 Assets/SampleScenes/Menu/Scripts/MenuSceneLoader.cs
 Assets/SampleScenes/Menu/Scripts/PauseMenu.cs
 Assets/SampleScenes/Menu/Scripts/SceneAndURLLoader.cs
-Assets/Scripts/FirstPersonController.cs
+"Assets/Scripts/Character Controllers/FirstPersonController.cs"
+"Assets/Scripts/Character Controllers/RigidbodyFirstPersonController.cs"
+Assets/Scripts/HeadBob.cs
+Assets/Scripts/MouseLook.cs
 -r:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\System.Runtime.Serialization.dll"
 -r:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\System.Xml.Linq.dll"
 -r:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\UnityScript.dll"

@@ -44,7 +44,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 					CurrentTargetSpeed = ForwardSpeed;
 				}
 #if !MOBILE_INPUT
-	            if (Input.GetKey(RunKey))
+	            if (true)
 	            {
 		            CurrentTargetSpeed *= RunMultiplier;
 		            m_Running = true;
@@ -55,7 +55,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
 	            }
 #endif
             }
-
 #if !MOBILE_INPUT
             public bool Running
             {
@@ -98,7 +97,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public float wallJumpReset;
         public float wallJumpTimer;
         public Vector3 wallDirection;
-
+        public Boolean hasDoubleJumped;
 
         public Vector3 Velocity
         {
@@ -207,7 +206,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if (m_IsGrounded)
             {
                 m_RigidBody.drag = 5f;
-
+                hasDoubleJumped = false;
                 if (m_Jump)
                 {
                     m_RigidBody.drag = 0f;
@@ -229,9 +228,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 if (IsWallToLeftOrRight() && movementSettings.Running && !isWallRunning){
                     Debug.Log("Wall ride initialized");
                     m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
-                    m_RigidBody.AddForce(new Vector3(0f, movementSettings.JumpForce, 0f), ForceMode.Impulse);
+                    m_RigidBody.AddForce(new Vector3(0f, 0.8f * movementSettings.JumpForce, 0f), ForceMode.Impulse);
                     m_Jumping = true;
                     isWallRunning = true;
+                    hasDoubleJumped = false;
                 } else {
                     if (!IsWallToLeftOrRight()){
                         isWallRunning = false;
@@ -240,13 +240,34 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 //Allow wall jumps
                 //Give a force up and forwards
                 if (isWallRunning && m_Jump){
-                    Debug.Log("Wall Jump");
-                    hasJustWallJumped = true;
-                    Vector3 forward = cam.transform.forward;
-                    forward = Vector3.ProjectOnPlane(forward, Vector3.up);
-                    forward = Vector3.Scale( new Vector3(m_RigidBody.velocity.magnitude*3, 0f, m_RigidBody.velocity.magnitude*3), forward);
-                    Vector3 jump = new Vector3(0f, movementSettings.JumpForce, 0f);
-                    m_RigidBody.AddForce(forward + jump, ForceMode.Impulse);
+                    // nouvel algorithme
+                    Vector3 jump = new Vector3(0f, 1.4f * movementSettings.JumpForce, 0f);
+                    if (IsWallToRight()){
+                        Vector3 wallNormal = Vector3.Normalize(Vector3.Project(-cam.transform.right, GetRightWallNormal()));
+                        m_RigidBody.AddForce(75f * wallNormal + jump, ForceMode.Impulse);
+                    } else {
+                        // wall to left
+                        Vector3 wallNormal = Vector3.Normalize(Vector3.Project(cam.transform.right, GetLeftWallNormal()));
+                        m_RigidBody.AddForce(75f * wallNormal + jump, ForceMode.Impulse);
+                    }
+                    // -------- REMEMBER ------- need to modify this part of the code
+                    // hasJustWallJumped = true;
+                    // forward = Vector3.ProjectOnPlane(forward, Vector3.up);
+                    // forward = Vector3.Scale( new Vector3(m_RigidBody.velocity.magnitude*4, 0f, m_RigidBody.velocity.magnitude*4), forward);
+                    // Vector3 jump = new Vector3(0f, 1.4f * movementSettings.JumpForce, 0f);
+                    // m_RigidBody.AddForce(forward + jump, ForceMode.Impulse);
+                } else {
+                    //double jump
+                    if (!hasDoubleJumped && m_Jump){
+                        Debug.Log("TEST double jump");
+                        hasDoubleJumped = true;
+                        Vector3 forward = cam.transform.forward;
+                        forward = Vector3.ProjectOnPlane(forward, Vector3.up);
+                        forward = Vector3.Scale( new Vector3(m_RigidBody.velocity.magnitude*4, 0f, m_RigidBody.velocity.magnitude*4), forward);
+                        Vector3 jump = new Vector3(0f, movementSettings.JumpForce, 0f);
+                        m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x / 2f, 0f, m_RigidBody.velocity.z / 2f);
+                        m_RigidBody.AddForce(forward + jump, ForceMode.Impulse);
+                    }
                 }
                 // Landing
                 if (m_PreviouslyGrounded && !m_Jumping)
@@ -366,6 +387,28 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if (Physics.Raycast(new Vector3( transform.position.x, transform.position.y, transform.position.z ), transform.right, out hit, 10f * rayCastLengthCheck, layer)) {
                     wallInContact = hit.collider.gameObject;
                     return wallInContact.transform.forward;
+            } else {
+                return new Vector3();
+            }
+        }
+        //return the direction of the wall's normal
+        private Vector3 GetLeftWallNormal() {
+            RaycastHit hit;
+            GameObject wallInContact;
+            if (Physics.Raycast(new Vector3( transform.position.x, transform.position.y, transform.position.z ), -transform.right, out hit, 10f * rayCastLengthCheck, layer)) {
+                    wallInContact = hit.collider.gameObject;
+                    return wallInContact.transform.right;
+            } else {
+                return new Vector3();
+            }
+        }
+        //return the direction of the wall's normal
+        private Vector3 GetRightWallNormal() {
+            RaycastHit hit;
+            GameObject wallInContact;
+            if (Physics.Raycast(new Vector3( transform.position.x, transform.position.y, transform.position.z ), transform.right, out hit, 10f * rayCastLengthCheck, layer)) {
+                    wallInContact = hit.collider.gameObject;
+                    return wallInContact.transform.right;
             } else {
                 return new Vector3();
             }

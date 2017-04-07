@@ -28,7 +28,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         }
 
 
-        public void LookRotation(Transform character, Transform camera)
+        public void LookRotation(Transform character, Transform camera, Boolean isWallRunning)
         {
             float yRot = CrossPlatformInputManager.GetAxis("Mouse X") * XSensitivity;
             float xRot = CrossPlatformInputManager.GetAxis("Mouse Y") * YSensitivity;
@@ -43,8 +43,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 character.localRotation = Quaternion.Slerp (character.localRotation, m_CharacterTargetRot,
                     smoothTime * Time.deltaTime);
-                camera.localRotation = Quaternion.Slerp (camera.localRotation, m_CameraTargetRot,
-                    smoothTime * Time.deltaTime);
+                if (!isWallRunning){
+                    camera.localRotation = Quaternion.Slerp (camera.localRotation, m_CameraTargetRot,smoothTime * Time.deltaTime);
+                }
             }
             else
             {

@@ -95,9 +95,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public float wallRunTimer;
         public Boolean hasJustWallJumped;
         public float wallJumpReset;
-        public float wallJumpTimer;
         public Vector3 wallDirection;
         public Boolean hasDoubleJumped;
+        public float wallJumpTimer;
+        public float wallJumpDelay;
+        public float wallJumpUpMultiplier;
+        public Boolean wallWasOnLeft;
+        public Boolean wallWasOnRight;
+        public Boolean previouslyWallRunning;
 
         public Vector3 Velocity
         {
@@ -140,6 +145,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
             wallJumpTimer = 0f;
             wallJumpReset = 0.2f;
             rayCastLengthCheck =  radius + 0.5f;
+            wallWasOnLeft = false;
+            wallWasOnRight = false;
+            previouslyWallRunning = false;
         }
 
 
@@ -187,6 +195,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                                     Debug.Log("Forward for wall Jump");
                                 }
                                 else {
+                                    previouslyWallRunning = true;
                                     if (IsWallToLeft()){
                                         desiredMove = Vector3.Project(desiredMove, GetLeftWallForward());
                                     } else {
@@ -202,9 +211,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_RigidBody.AddForce(desiredMove*SlopeMultiplier(), ForceMode.Impulse);
 
             }
-
+            // cam.transform.Rotate(-cam.transform.forward * 10f);
             if (m_IsGrounded)
             {
+                isWallRunning = false;
                 m_RigidBody.drag = 5f;
                 hasDoubleJumped = false;
                 if (m_Jump)
@@ -226,7 +236,29 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 // Initialize Wall Ride
                 // wall near + running + Not already wall running
                 if (IsWallToLeftOrRight() && movementSettings.Running && !isWallRunning){
+                    Vector3 forward = cam.transform.forward;
+                    // Quaternion qTo = Quaternion.identity;
+                    // if(IsWallToLeft()){
+                    //     // if (forward > 0) cam.transform.Rotate(-forward * 5f);
+                    //     // else cam.transform.Rotate(forward * 5f);
+                    //     qTo = Quaternion.Euler(0f, 0f, -5f);
+                    //     //cam.transform.rotation = Quaternion.AngleAxis(-5f, cam.transform.forward);
+                    //     //cam.transform.Rotate(0f, 0f, -5f);
+                    //     wallWasOnRight = false;
+                    //     wallWasOnLeft = true;
+                    // } else {
+                    //     // Debug.Log(cam.transform.forward);
+                    //     // if (forward > 0) cam.transform.Rotate(forward * 5f);
+                    //     // else cam.transform.Rotate(-forward * 5f);
+                    //     qTo = Quaternion.Euler(0f, 0f, 5f);
+                    //     //cam.transform.Rotate(0f, 0f, 5f);
+                    //     wallWasOnRight = true;
+                    //     wallWasOnLeft = false;
+                    // }
+                    // rotate form its initial position to qTo position, by step of the last value given
+                    //cam.transform.rotation = Quaternion.Lerp(cam.transform.rotation, qTo, 1f);
                     Debug.Log("Wall ride initialized");
+                    wallJumpTimer = 0f;
                     m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
                     m_RigidBody.AddForce(new Vector3(0f, 0.8f * movementSettings.JumpForce, 0f), ForceMode.Impulse);
                     m_Jumping = true;
@@ -239,16 +271,46 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 }
                 //Allow wall jumps
                 //Give a force up and forwards
-                if (isWallRunning && m_Jump){
-                    // nouvel algorithme
-                    Vector3 jump = new Vector3(0f, 1.4f * movementSettings.JumpForce, 0f);
-                    if (IsWallToRight()){
-                        Vector3 wallNormal = Vector3.Normalize(Vector3.Project(-cam.transform.right, GetRightWallNormal()));
-                        m_RigidBody.AddForce(75f * wallNormal + jump, ForceMode.Impulse);
-                    } else {
-                        // wall to left
-                        Vector3 wallNormal = Vector3.Normalize(Vector3.Project(cam.transform.right, GetLeftWallNormal()));
-                        m_RigidBody.AddForce(75f * wallNormal + jump, ForceMode.Impulse);
+                if (isWallRunning){
+                    wallJumpTimer += Time.fixedDeltaTime;
+                    // Smoothly rotate the camera
+                    if (wallJumpTimer < wallJumpDelay){
+                        Quaternion qTo = Quaternion.identity;
+                        if(IsWallToLeft()){
+                            // if (forward > 0) cam.transform.Rotate(-forward * 5f);
+                            // else cam.transform.Rotate(forward * 5f);
+                            //qTo = Quaternion.Euler(0f, 0f, -90f);
+                            qTo = Quaternion.AngleAxis(-90f, cam.transform.forward);
+                            //cam.transform.rotation = Quaternion.AngleAxis(-5f, cam.transform.forward);
+                            //cam.transform.Rotate(0f, 0f, -5f);
+                            wallWasOnRight = false;
+                            wallWasOnLeft = true;
+                        } else {
+                            // Debug.Log(cam.transform.forward);
+                            // if (forward > 0) cam.transform.Rotate(forward * 5f);
+                            // else cam.transform.Rotate(-forward * 5f);
+                            // qTo = Quaternion.Euler(0f, 0f, 90f);
+                            qTo = Quaternion.AngleAxis(90f, cam.transform.forward);
+                            //cam.transform.Rotate(0f, 0f, 5f);
+                            wallWasOnRight = true;
+                            wallWasOnLeft = false;
+                        }
+                        cam.transform.rotation = Quaternion.RotateTowards(cam.transform.rotation, qTo, 20f * Time.fixedDeltaTime);
+                    }
+                    if (m_Jump && wallJumpTimer > wallJumpDelay){
+                        // nouvel algorithme
+                        Vector3 jump = new Vector3(0f, wallJumpUpMultiplier * movementSettings.JumpForce, 0f);
+                        m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
+                        if (IsWallToRight()){
+                            Vector3 wallNormal = Vector3.Normalize(Vector3.Project(-cam.transform.right, GetRightWallNormal()));
+                            m_RigidBody.AddForce(75f * wallNormal, ForceMode.Impulse);
+                            m_RigidBody.AddForce(jump, ForceMode.Impulse);
+                        } else {
+                            // wall to left
+                            Vector3 wallNormal = Vector3.Normalize(Vector3.Project(cam.transform.right, GetLeftWallNormal()));
+                            m_RigidBody.AddForce(75f * wallNormal, ForceMode.Impulse);
+                            m_RigidBody.AddForce(jump, ForceMode.Impulse);
+                        }
                     }
                     // -------- REMEMBER ------- need to modify this part of the code
                     // hasJustWallJumped = true;
@@ -274,6 +336,22 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 {
                     StickToGroundHelper();
                 }
+            }
+            // test if the player was wallRunning on the last frame and isn't on the current frame to rotate the camera back
+            if (previouslyWallRunning && !isWallRunning){
+                previouslyWallRunning = false;
+                Vector3 forward = cam.transform.forward;
+                // if (wallWasOnRight){
+                //     Debug.Log("Wall was on right");
+                //     // if ( forward > 0) cam.transform.Rotate(-forward * 5f);
+                //     // else cam.transform.Rotate(forward * 5f);
+                //     cam.transform.Rotate(0f, 0f, -5f);
+                // } else {
+                //     Debug.Log("Wall was on left");
+                //     // if (forward > 0) cam.transform.Rotate(forward * 5f);
+                //     // else cam.transform.Rotate(-forward * 5f);
+                //     cam.transform.Rotate(0f, 0f, 5f);
+                // }
             }
             m_Jump = false;
         }
@@ -322,7 +400,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             // get the rotation before it's changed
             float oldYRotation = transform.eulerAngles.y;
 
-            mouseLook.LookRotation (transform, cam.transform);
+            mouseLook.LookRotation (transform, cam.transform, isWallRunning);
 
             if (m_IsGrounded)
             {

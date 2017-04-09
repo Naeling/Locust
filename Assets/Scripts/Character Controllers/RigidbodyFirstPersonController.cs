@@ -277,12 +277,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     if (wallJumpTimer < wallJumpDelay){
                         Quaternion qTo = Quaternion.identity;
                         if(IsWallToLeft()){
-                            // if (forward > 0) cam.transform.Rotate(-forward * 5f);
-                            // else cam.transform.Rotate(forward * 5f);
-                            //qTo = Quaternion.Euler(0f, 0f, -90f);
-                            qTo = Quaternion.AngleAxis(-90f, cam.transform.forward);
-                            //cam.transform.rotation = Quaternion.AngleAxis(-5f, cam.transform.forward);
-                            //cam.transform.Rotate(0f, 0f, -5f);
+                            qTo = Quaternion.AngleAxis(-10f, cam.transform.forward);
+                            qTo = qTo * cam.transform.rotation;
+                            // Debug.Log("Rotation :" + cam.transform.rotation);
+                            Debug.Log("Quaternion :" + qTo);
                             wallWasOnRight = false;
                             wallWasOnLeft = true;
                         } else {
@@ -290,12 +288,16 @@ namespace UnityStandardAssets.Characters.FirstPerson
                             // if (forward > 0) cam.transform.Rotate(forward * 5f);
                             // else cam.transform.Rotate(-forward * 5f);
                             // qTo = Quaternion.Euler(0f, 0f, 90f);
-                            qTo = Quaternion.AngleAxis(90f, cam.transform.forward);
+                            qTo = Quaternion.AngleAxis(10f, cam.transform.forward);
+                            qTo = qTo * cam.transform.rotation;
+                            // Debug.Log("Rotation :" + cam.transform.rotation);
+                            Debug.Log("Quaternion :" + qTo);
                             //cam.transform.Rotate(0f, 0f, 5f);
                             wallWasOnRight = true;
                             wallWasOnLeft = false;
                         }
-                        cam.transform.rotation = Quaternion.RotateTowards(cam.transform.rotation, qTo, 20f * Time.fixedDeltaTime);
+                        cam.transform.rotation = Quaternion.Slerp(cam.transform.rotation,qTo, 5f * Time.fixedDeltaTime);
+                        // cam.transform.rotation = Quaternion.RotateTowards(cam.transform.rotation, qTo, 20f * Time.fixedDeltaTime);
                     }
                     if (m_Jump && wallJumpTimer > wallJumpDelay){
                         // nouvel algorithme

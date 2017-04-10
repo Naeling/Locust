@@ -92,17 +92,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public float rayCastLengthCheck;
         public LayerMask layer;
         public Boolean isWallRunning;
-        public float wallRunTimer;
         public Boolean hasJustWallJumped;
-        public float wallJumpReset;
-        public Vector3 wallDirection;
         public Boolean hasDoubleJumped;
         public float wallJumpTimer;
         public float wallJumpDelay;
         public float wallJumpUpMultiplier;
-        public Boolean wallWasOnLeft;
-        public Boolean wallWasOnRight;
         public Boolean previouslyWallRunning;
+        public float wallRunTimer;
+        public float wallRunDelay;
 
         public Vector3 Velocity
         {
@@ -139,15 +136,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
             mouseLook.Init (transform, cam.transform);
 
             radius = m_Capsule.radius;
-            wallDirection = new Vector3();
             isWallRunning = false;
             hasJustWallJumped = false;
             wallJumpTimer = 0f;
-            wallJumpReset = 0.2f;
             rayCastLengthCheck =  radius + 0.5f;
-            wallWasOnLeft = false;
-            wallWasOnRight = false;
             previouslyWallRunning = false;
+            wallRunTimer = 0;
         }
 
 
@@ -191,18 +185,37 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     {
                         if (!m_IsGrounded){
                             if (isWallRunning){
-                                if (m_Jump){
-                                    Debug.Log("Forward for wall Jump");
-                                }
-                                else {
+                                Debug.Log("1");
+                                if (!m_Jump) {
+                                    // Need to reduce the gravity strength
                                     previouslyWallRunning = true;
-                                    if (IsWallToLeft()){
-                                        desiredMove = Vector3.Project(desiredMove, GetLeftWallForward());
+                                    if (m_RigidBody.velocity.sqrMagnitude < 1.5 * (movementSettings.CurrentTargetSpeed*movementSettings.CurrentTargetSpeed)){
+                                        if (IsWallToLeft()){
+                                            desiredMove = Vector3.Project(desiredMove, GetLeftWallForward());
+                                        } else {
+                                            desiredMove = Vector3.Project(desiredMove, GetRightWallForward());
+                                        }
                                     } else {
-                                        desiredMove = Vector3.Project(desiredMove, GetRightWallForward());
+                                        desiredMove = new Vector3();
+                                        if (IsWallToLeft()){
+                                            Vector3 forward = GetLeftWallForward();
+                                            forward = Vector3.ProjectOnPlane(forward, Vector3.up);
+                                            float gravity = m_RigidBody.velocity.y;
+                                            m_RigidBody.velocity = Vector3.Project(m_RigidBody.velocity, forward);
+                                            m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, gravity, m_RigidBody.velocity.z);
+                                        } else {
+                                            Vector3 forward = GetRightWallForward();
+                                            forward = Vector3.ProjectOnPlane(forward, Vector3.up);
+                                            float gravity = m_RigidBody.velocity.y;
+                                            m_RigidBody.velocity = Vector3.Project(m_RigidBody.velocity, forward);
+                                            m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, gravity, m_RigidBody.velocity.z);
+                                        }
                                     }
+                                    // Setup the length of a wallRun here
+                                    desiredMove += new Vector3(0f, 2.5f, 0f);
                                 }
                             } else {
+                                Debug.Log("2");
                                 desiredMove = Vector3.Project(desiredMove, cam.transform.right);
                             }
                         } else { desiredMove = new Vector3();}
@@ -232,32 +245,20 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             else
             {
+                if (hasJustWallJumped && wallRunTimer < wallRunDelay){
+                    wallRunTimer += Time.fixedDeltaTime;
+                } else {
+                    if (wallRunTimer >= wallRunDelay){
+                        isWallRunning = false;
+                        hasJustWallJumped = false;
+                    }
+                }
                 m_RigidBody.drag = 0f;
-                // Initialize Wall Ride
-                // wall near + running + Not already wall running
-                if (IsWallToLeftOrRight() && movementSettings.Running && !isWallRunning){
+                // INITIALIZE WALL RIDE
+                if (IsWallToLeftOrRight() && movementSettings.Running && !isWallRunning && !hasJustWallJumped){
+                    Debug.Log("WALLRIDE INITIALIZED");
+                    wallRunTimer = 0;
                     Vector3 forward = cam.transform.forward;
-                    // Quaternion qTo = Quaternion.identity;
-                    // if(IsWallToLeft()){
-                    //     // if (forward > 0) cam.transform.Rotate(-forward * 5f);
-                    //     // else cam.transform.Rotate(forward * 5f);
-                    //     qTo = Quaternion.Euler(0f, 0f, -5f);
-                    //     //cam.transform.rotation = Quaternion.AngleAxis(-5f, cam.transform.forward);
-                    //     //cam.transform.Rotate(0f, 0f, -5f);
-                    //     wallWasOnRight = false;
-                    //     wallWasOnLeft = true;
-                    // } else {
-                    //     // Debug.Log(cam.transform.forward);
-                    //     // if (forward > 0) cam.transform.Rotate(forward * 5f);
-                    //     // else cam.transform.Rotate(-forward * 5f);
-                    //     qTo = Quaternion.Euler(0f, 0f, 5f);
-                    //     //cam.transform.Rotate(0f, 0f, 5f);
-                    //     wallWasOnRight = true;
-                    //     wallWasOnLeft = false;
-                    // }
-                    // rotate form its initial position to qTo position, by step of the last value given
-                    //cam.transform.rotation = Quaternion.Lerp(cam.transform.rotation, qTo, 1f);
-                    Debug.Log("Wall ride initialized");
                     wallJumpTimer = 0f;
                     m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
                     m_RigidBody.AddForce(new Vector3(0f, 0.8f * movementSettings.JumpForce, 0f), ForceMode.Impulse);
@@ -269,8 +270,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                         isWallRunning = false;
                     }
                 }
-                //Allow wall jumps
-                //Give a force up and forwards
+                // WALL JUMP
                 if (isWallRunning){
                     wallJumpTimer += Time.fixedDeltaTime;
                     // Smoothly rotate the camera
@@ -279,51 +279,32 @@ namespace UnityStandardAssets.Characters.FirstPerson
                         if(IsWallToLeft()){
                             qTo = Quaternion.AngleAxis(-10f, cam.transform.forward);
                             qTo = qTo * cam.transform.rotation;
-                            // Debug.Log("Rotation :" + cam.transform.rotation);
-                            Debug.Log("Quaternion :" + qTo);
-                            wallWasOnRight = false;
-                            wallWasOnLeft = true;
                         } else {
-                            // Debug.Log(cam.transform.forward);
-                            // if (forward > 0) cam.transform.Rotate(forward * 5f);
-                            // else cam.transform.Rotate(-forward * 5f);
-                            // qTo = Quaternion.Euler(0f, 0f, 90f);
                             qTo = Quaternion.AngleAxis(10f, cam.transform.forward);
                             qTo = qTo * cam.transform.rotation;
-                            // Debug.Log("Rotation :" + cam.transform.rotation);
-                            Debug.Log("Quaternion :" + qTo);
-                            //cam.transform.Rotate(0f, 0f, 5f);
-                            wallWasOnRight = true;
-                            wallWasOnLeft = false;
                         }
                         cam.transform.rotation = Quaternion.Slerp(cam.transform.rotation,qTo, 5f * Time.fixedDeltaTime);
-                        // cam.transform.rotation = Quaternion.RotateTowards(cam.transform.rotation, qTo, 20f * Time.fixedDeltaTime);
                     }
                     if (m_Jump && wallJumpTimer > wallJumpDelay){
-                        // nouvel algorithme
+                        hasJustWallJumped = true;
+                        isWallRunning = false;
                         Vector3 jump = new Vector3(0f, wallJumpUpMultiplier * movementSettings.JumpForce, 0f);
                         m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
                         if (IsWallToRight()){
+                            Debug.Log("WALL JUMP");
                             Vector3 wallNormal = Vector3.Normalize(Vector3.Project(-cam.transform.right, GetRightWallNormal()));
                             m_RigidBody.AddForce(75f * wallNormal, ForceMode.Impulse);
                             m_RigidBody.AddForce(jump, ForceMode.Impulse);
                         } else {
-                            // wall to left
+                            Debug.Log("WALL JUMP");
                             Vector3 wallNormal = Vector3.Normalize(Vector3.Project(cam.transform.right, GetLeftWallNormal()));
                             m_RigidBody.AddForce(75f * wallNormal, ForceMode.Impulse);
                             m_RigidBody.AddForce(jump, ForceMode.Impulse);
                         }
                     }
-                    // -------- REMEMBER ------- need to modify this part of the code
-                    // hasJustWallJumped = true;
-                    // forward = Vector3.ProjectOnPlane(forward, Vector3.up);
-                    // forward = Vector3.Scale( new Vector3(m_RigidBody.velocity.magnitude*4, 0f, m_RigidBody.velocity.magnitude*4), forward);
-                    // Vector3 jump = new Vector3(0f, 1.4f * movementSettings.JumpForce, 0f);
-                    // m_RigidBody.AddForce(forward + jump, ForceMode.Impulse);
                 } else {
-                    //double jump
+                    // DOUBLE JUMP
                     if (!hasDoubleJumped && m_Jump){
-                        Debug.Log("TEST double jump");
                         hasDoubleJumped = true;
                         Vector3 forward = cam.transform.forward;
                         forward = Vector3.ProjectOnPlane(forward, Vector3.up);
@@ -343,17 +324,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if (previouslyWallRunning && !isWallRunning){
                 previouslyWallRunning = false;
                 Vector3 forward = cam.transform.forward;
-                // if (wallWasOnRight){
-                //     Debug.Log("Wall was on right");
-                //     // if ( forward > 0) cam.transform.Rotate(-forward * 5f);
-                //     // else cam.transform.Rotate(forward * 5f);
-                //     cam.transform.Rotate(0f, 0f, -5f);
-                // } else {
-                //     Debug.Log("Wall was on left");
-                //     // if (forward > 0) cam.transform.Rotate(forward * 5f);
-                //     // else cam.transform.Rotate(-forward * 5f);
-                //     cam.transform.Rotate(0f, 0f, 5f);
-                // }
             }
             m_Jump = false;
         }
@@ -448,6 +418,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
             Debug.DrawRay(new Vector3 (transform.position.x, transform.position.y, transform.position.z), -transform.right * rayCastLengthCheck, Color.red);
             //Debug.Log("Wall on left:" + wallOnLeft);
             return wallOnLeft;
+        }
+        private Boolean CanWallRideLeft(){
+            //1. !grounded
+            //2. wallOnleft
+            //3.
+            return true;
         }
         // return a parallel vector to the wall on the left
         private Vector3 GetLeftWallForward() {

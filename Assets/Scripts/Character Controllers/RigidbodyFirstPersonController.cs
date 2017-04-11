@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
+using System.Collections.Generic;
 
 namespace UnityStandardAssets.Characters.FirstPerson
 {
@@ -101,6 +102,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public float wallRunTimer;
         public float wallRunDelay;
 
+        public List<ObjectSwitcher> switchables;
+
         public Vector3 Velocity
         {
             get { return m_RigidBody.velocity; }
@@ -134,7 +137,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_RigidBody = GetComponent<Rigidbody>();
             m_Capsule = GetComponent<CapsuleCollider>();
             mouseLook.Init (transform, cam.transform);
-
+            switchables = new List<ObjectSwitcher>();
+            GameObject[] switchableGameobjects = GameObject.FindGameObjectsWithTag("Switchable");
+            for (int i = 0; i < switchableGameobjects.Length; i++){
+                switchables.Add(switchableGameobjects[i].GetComponent<ObjectSwitcher>());
+            }
             radius = m_Capsule.radius;
             isWallRunning = false;
             hasJustWallJumped = false;
@@ -185,9 +192,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     {
                         if (!m_IsGrounded){
                             if (isWallRunning){
-                                Debug.Log("1");
                                 if (!m_Jump) {
-                                    // Need to reduce the gravity strength
                                     previouslyWallRunning = true;
                                     if (m_RigidBody.velocity.sqrMagnitude < 1.5 * (movementSettings.CurrentTargetSpeed*movementSettings.CurrentTargetSpeed)){
                                         if (IsWallToLeft()){
@@ -215,7 +220,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
                                     desiredMove += new Vector3(0f, 2.5f, 0f);
                                 }
                             } else {
-                                Debug.Log("2");
                                 desiredMove = Vector3.Project(desiredMove, cam.transform.right);
                             }
                         } else { desiredMove = new Vector3();}
@@ -224,7 +228,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_RigidBody.AddForce(desiredMove*SlopeMultiplier(), ForceMode.Impulse);
 
             }
-            // cam.transform.Rotate(-cam.transform.forward * 10f);
             if (m_IsGrounded)
             {
                 isWallRunning = false;
@@ -324,6 +327,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if (previouslyWallRunning && !isWallRunning){
                 previouslyWallRunning = false;
                 Vector3 forward = cam.transform.forward;
+            }
+            if (Input.GetMouseButtonDown(0)){
+                foreach(ObjectSwitcher switcher in switchables){
+                    Debug.Log(switcher);
+                    switcher.Switch();
+                }
             }
             m_Jump = false;
         }

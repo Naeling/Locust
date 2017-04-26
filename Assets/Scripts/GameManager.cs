@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour {
 	public Transform spawnPoint;
 	private MouseLook cameraController;
 	private RigidbodyFirstPersonController playerController;
+	public Timer timer;
 
 
 	void Start () {
@@ -19,19 +20,20 @@ public class GameManager : MonoBehaviour {
 		playerRigidbody = player.GetComponent<Rigidbody>();
 		cameraController = player.GetComponent<RigidbodyFirstPersonController>().mouseLook;
 		playerController = player.GetComponent<RigidbodyFirstPersonController>();
-
 	}
 
-	// Update is called once per frame
 	void Update () {
 		if (CrossPlatformInputManager.GetButtonDown("Restart"))
 		{
-			Debug.Log("Restart requested");
-			// Just need to reset the rotation data in the mouseLook Object
-			cameraController.resetRotations();
-			playerRigidbody.velocity = new Vector3();
-			playerTransform.position = spawnPoint.position;
-			playerTransform.rotation = Quaternion.identity;
+			Restart();
 		}
+	}
+	void Restart () {
+		Debug.Log("Restart requested");
+		cameraController.resetRotations();
+		playerRigidbody.velocity = new Vector3();
+		playerTransform.position = spawnPoint.position;
+		playerTransform.rotation = Quaternion.identity;
+		timer.Reset();
 	}
 }

@@ -87,7 +87,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private CapsuleCollider m_Capsule;
         private float m_YRotation;
         private Vector3 m_GroundContactNormal;
-        private bool m_Jump, m_PreviouslyGrounded, m_Jumping, m_IsGrounded;
+        private bool m_Jump, m_Turbo, m_PreviouslyGrounded, m_Jumping, m_IsGrounded, canTurbo;
 
         public float radius;
         public float rayCastLengthCheck;
@@ -101,6 +101,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public Boolean previouslyWallRunning;
         public float wallRunTimer;
         public float wallRunDelay;
+        public float turboPoints;
+        public float turboRealoadMultiplier;
 
         public List<ObjectSwitcher> switchables;
 
@@ -149,6 +151,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
             rayCastLengthCheck =  radius + 0.5f;
             previouslyWallRunning = false;
             wallRunTimer = 0;
+            m_Turbo = false;
+            canTurbo = true;
+            turboPoints = 100f;
         }
 
 
@@ -159,6 +164,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if (CrossPlatformInputManager.GetButtonDown("Jump") && !m_Jump)
             {
                 m_Jump = true;
+            }
+            if (CrossPlatformInputManager.GetButton("Turbo") && !m_Turbo) {
+                //Debug.Log("Turbo requested");
+                m_Turbo = true;
+            } else {
+                // Reload Turbo
+                //turboPoints += Time.deltaTime * turboRealoadMultiplier;
+
             }
         }
 
@@ -174,8 +187,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 Vector3 desiredMove = cam.transform.forward*input.y + cam.transform.right*input.x;
                 desiredMove = Vector3.ProjectOnPlane(desiredMove, m_GroundContactNormal).normalized;
                 if (m_IsGrounded){
-                    desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed;
-                    desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed;
+                    if (!m_Turbo) {
+                        desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed;
+                        desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed;
+                    } else {
+                        //Debug.Log("Setting up turbo speed");
+                        desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed * 1.3f;
+                        desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed * 1.3f;
+                    }
                 } else {
                     if (isWallRunning){
                         desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed * 0.1f;
@@ -186,14 +205,19 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     }
                 }
                 desiredMove.y = desiredMove.y*movementSettings.CurrentTargetSpeed;
+                // Jump
                 if ( input.y >= 0){
-                    if (m_RigidBody.velocity.sqrMagnitude >=
-                        (movementSettings.CurrentTargetSpeed*movementSettings.CurrentTargetSpeed))
+                    // Current speed already superior to the target speed
+                    if (m_RigidBody.velocity.sqrMagnitude >= (movementSettings.CurrentTargetSpeed*movementSettings.CurrentTargetSpeed))
                     {
+                        // Not grounded
                         if (!m_IsGrounded){
+                            // Wall Running
                             if (isWallRunning){
+                                // Doesn't want to wall jump
                                 if (!m_Jump) {
                                     previouslyWallRunning = true;
+                                    // Speed inferior to the wall run speed cap
                                     if (m_RigidBody.velocity.sqrMagnitude < 1.5 * (movementSettings.CurrentTargetSpeed*movementSettings.CurrentTargetSpeed)){
                                         if (IsWallToLeft()){
                                             desiredMove = Vector3.Project(desiredMove, GetLeftWallForward());
@@ -201,6 +225,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                                             desiredMove = Vector3.Project(desiredMove, GetRightWallForward());
                                         }
                                     } else {
+                                        // Project the current velocity on the wall direction
                                         desiredMove = new Vector3();
                                         if (IsWallToLeft()){
                                             Vector3 forward = GetLeftWallForward();
@@ -217,12 +242,21 @@ namespace UnityStandardAssets.Characters.FirstPerson
                                         }
                                     }
                                     // Setup the length of a wallRun here
+                                    // Adjust Gravity strength during a wall Run
                                     desiredMove += new Vector3(0f, 2.5f, 0f);
                                 }
                             } else {
                                 desiredMove = Vector3.Project(desiredMove, cam.transform.right);
                             }
-                        } else { desiredMove = new Vector3();}
+                        } else {
+                            //Debug.Log("Currently grounded");
+                            // Cannot turbo or doesn't want to
+                            if (!m_Turbo || !canTurbo){
+                                desiredMove = new Vector3();
+                            } else {
+                                //Debug.Log("Turbo boost Baby!");
+                            }
+                        }
                     }
                 }
                 m_RigidBody.AddForce(desiredMove*SlopeMultiplier(), ForceMode.Impulse);
@@ -334,7 +368,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     switcher.Switch();
                 }
             }
+            // Reset player's inputs
             m_Jump = false;
+            if (!CrossPlatformInputManager.GetButton("Turbo") && m_Turbo) {
+                //Debug.Log("Ending Turbo");
+                m_Turbo = false;
+            }
         }
 
 
@@ -480,3 +519,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
         }
     }
 }
+
+// sprint feature
+// Rules:
+// => can be activated on the ground only
+// => automatically recharged over time
+// => need to get a turbo power-up ?
+
+// Effect :
+// => Increase the acceleration
+
+// Input :
+//  => Hold the turbo button

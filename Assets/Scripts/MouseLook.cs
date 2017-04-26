@@ -30,17 +30,23 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         public void LookRotation(Transform character, Transform camera, Boolean isWallRunning)
         {
+            //Get the mouse's movement
             float yRot = CrossPlatformInputManager.GetAxis("Mouse X") * XSensitivity;
             float xRot = CrossPlatformInputManager.GetAxis("Mouse Y") * YSensitivity;
 
+            //Create an euler rotation based on the mouse's movement
+            //Add if to the current rotation
             m_CharacterTargetRot *= Quaternion.Euler (0f, yRot, 0f);
             m_CameraTargetRot *= Quaternion.Euler (-xRot, 0f, 0f);
 
             if(clampVerticalRotation)
                 m_CameraTargetRot = ClampRotationAroundXAxis (m_CameraTargetRot);
 
+            //Problem:
+            //The camera moves to go back to the mouse position
             if(smooth)
             {
+                // Apply the rotation smoothly
                 character.localRotation = Quaternion.Slerp (character.localRotation, m_CharacterTargetRot,
                     smoothTime * Time.deltaTime);
                 if (!isWallRunning){
@@ -56,6 +62,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
             UpdateCursorLock();
         }
 
+        public void resetRotations(){
+            m_CharacterTargetRot = Quaternion.identity;
+            m_CameraTargetRot = Quaternion.identity;
+        }
         public void SetCursorLock(bool value)
         {
             lockCursor = value;

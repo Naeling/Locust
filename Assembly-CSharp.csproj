@@ -51,6 +51,7 @@
      <Compile Include="Assets\SampleScenes\Menu\Scripts\SceneAndURLLoader.cs" />
      <Compile Include="Assets\Scripts\Character Controllers\FirstPersonController.cs" />
      <Compile Include="Assets\Scripts\Character Controllers\RigidbodyFirstPersonController.cs" />
+     <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\HeadBob.cs" />
      <Compile Include="Assets\Scripts\MouseLook.cs" />
      <Compile Include="Assets\Scripts\ObjectMover\ObjectMover.cs" />

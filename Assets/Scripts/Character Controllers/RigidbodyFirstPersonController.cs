@@ -102,7 +102,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public float wallRunTimer;
         public float wallRunDelay;
         public float turboPoints;
-        public float turboRealoadMultiplier;
+        public float turboReloadMultiplier;
+        public float turboMax;
+        public float turboConsumptionMultiplier;
+        public float airControlMultiplier;
 
         public List<ObjectSwitcher> switchables;
 
@@ -153,7 +156,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             wallRunTimer = 0;
             m_Turbo = false;
             canTurbo = true;
-            turboPoints = 100f;
+            turboPoints = 0f;
+            turboMax = 100f;
         }
 
 
@@ -166,12 +170,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_Jump = true;
             }
             if (CrossPlatformInputManager.GetButton("Turbo") && !m_Turbo) {
-                //Debug.Log("Turbo requested");
+                Debug.Log("Turbo requested");
                 m_Turbo = true;
             } else {
                 // Reload Turbo
-                //turboPoints += Time.deltaTime * turboRealoadMultiplier;
-
+                if (turboPoints < turboMax && !m_Turbo){
+                    turboPoints += Time.deltaTime * turboReloadMultiplier;
+                    if (turboPoints > turboMax)
+                        turboPoints = turboMax;
+                }
             }
         }
 
@@ -191,7 +198,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
                         desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed;
                         desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed;
                     } else {
-                        //Debug.Log("Setting up turbo speed");
                         desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed * 1.3f;
                         desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed * 1.3f;
                     }
@@ -200,8 +206,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
                         desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed * 0.1f;
                         desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed * 0.1f;
                     } else {
-                        desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed * 0.2f;
-                        desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed * 0.2f;
+                        desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed * airControlMultiplier;
+                        desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed * airControlMultiplier;
                     }
                 }
                 desiredMove.y = desiredMove.y*movementSettings.CurrentTargetSpeed;
@@ -249,12 +255,17 @@ namespace UnityStandardAssets.Characters.FirstPerson
                                 desiredMove = Vector3.Project(desiredMove, cam.transform.right);
                             }
                         } else {
-                            //Debug.Log("Currently grounded");
-                            // Cannot turbo or doesn't want to
-                            if (!m_Turbo || !canTurbo){
+                            if (!m_Turbo || !canTurbo || turboPoints == 0f){
                                 desiredMove = new Vector3();
                             } else {
-                                //Debug.Log("Turbo boost Baby!");
+                                if (turboPoints > 0){
+                                    // Consume turboPoints
+                                    turboPoints -= Time.fixedDeltaTime * turboConsumptionMultiplier;
+                                    Debug.Log(turboPoints);
+                                    if (turboPoints < 0) {
+                                        turboPoints = 0f;
+                                    }
+                                }
                             }
                         }
                     }
@@ -371,7 +382,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             // Reset player's inputs
             m_Jump = false;
             if (!CrossPlatformInputManager.GetButton("Turbo") && m_Turbo) {
-                //Debug.Log("Ending Turbo");
                 m_Turbo = false;
             }
         }

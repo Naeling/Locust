@@ -108,10 +108,10 @@ MonoBehaviour:
     y: 30
     width: 1920
     height: 947
-  m_MinSize: {x: 917, y: 342}
-  m_MaxSize: {x: 22012, y: 10021}
+  m_MinSize: {x: 913, y: 342}
+  m_MaxSize: {x: 22008, y: 10021}
   vertical: 0
-  controlID: 160
+  controlID: 69
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -135,7 +135,7 @@ MonoBehaviour:
   m_MinSize: {x: 202, y: 342}
   m_MaxSize: {x: 4002, y: 8042}
   vertical: 1
-  controlID: 161
+  controlID: 70
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -154,8 +154,8 @@ MonoBehaviour:
     y: 0
     width: 1038
     height: 473
-  m_MinSize: {x: 102, y: 121}
-  m_MaxSize: {x: 4002, y: 4021}
+  m_MinSize: {x: 100, y: 100}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 13}
@@ -210,8 +210,8 @@ MonoBehaviour:
     y: 0
     width: 206
     height: 947
-  m_MinSize: {x: 204, y: 221}
-  m_MaxSize: {x: 4004, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 20}
   m_Panes:
   - {fileID: 20}
@@ -371,14 +371,14 @@ MonoBehaviour:
     width: 1036
     height: 452
   m_SceneLighting: 1
-  lastFramingTime: 9165.489317522422
+  lastFramingTime: 1722.3028284861853
   m_2DMode: 0
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -42.3452, y: 3.2657928, z: 32.259552}
+    m_Target: {x: -125.1, y: 14.122, z: -131.8}
     speed: 2
-    m_Value: {x: -42.3452, y: 3.2657928, z: 32.259552}
+    m_Value: {x: -125.1, y: 14.122, z: -131.8}
   m_RenderMode: 0
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -405,9 +405,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: -0.117654, y: 0.84400636, z: -0.20654291, w: -0.48078156}
   m_Size:
-    m_Target: 126.86166
+    m_Target: 17.79792
     speed: 2
-    m_Value: 126.86166
+    m_Value: 17.79792
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -721,9 +721,9 @@ MonoBehaviour:
     height: 926
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: decff6ff
-    m_LastClickedID: -602146
-    m_ExpandedIDs: e4fbffff00000000
+    m_SelectedIDs: 26350000
+    m_LastClickedID: 13606
+    m_ExpandedIDs: e4fbffff000000006e350000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -783,19 +783,19 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/Audio
+    - Assets/Scripts
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Audio
+  - Assets/Scripts
   m_LastFoldersGridSize: 16
   m_LastProjectPath: C:\Unity projects\Locust
   m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 5c560000
-    m_LastClickedID: 22108
-    m_ExpandedIDs: 00000000ee260000f02d000092300000e43200005a33000000ca9a3bffffff7f
+    m_SelectedIDs: d82b0000
+    m_LastClickedID: 11224
+    m_ExpandedIDs: 00000000ee260000d82b0000f22d000096300000e83200005e33000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -823,7 +823,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000ee260000d62b0000f02d000092300000e43200005a33000068330000
+    m_ExpandedIDs: 00000000ee260000f22d000096300000e83200005e330000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -854,18 +854,18 @@ MonoBehaviour:
     m_ExpandedInstanceIDs: 30260000cc2300001a240000d4230000de230000d62300000cedffffa6240000c60fffffe62300004cb2feff2225000024250000ec230000b0240000e0230000ea230000b4240000e423000052260000a46e0000a06e0000a26e0000ac6e0000ea250000e8250000de250000dc25000000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: Audio
-      m_OriginalName: Audio
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 22108
+      m_UserData: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 10}
     m_CreateAssetUtility:

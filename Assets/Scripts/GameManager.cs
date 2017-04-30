@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour {
 			Restart();
 		}
 	}
-	void Restart () {
+	public void Restart () {
 		Debug.Log("Restart requested");
 		cameraController.resetRotations();
 		playerRigidbody.velocity = new Vector3();

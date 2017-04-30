@@ -9,7 +9,7 @@ public class Goal : MonoBehaviour {
 	void OnTriggerEnter (Collider other){
 		if (other.CompareTag("Player")){
 			// Call a method to save the time
-			Debug.Log("TOUCHED");
+			gameManager.Restart();
 			gameManager.SaveTime();
 		}
 	}

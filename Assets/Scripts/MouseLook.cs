@@ -63,8 +63,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
         }
 
         public void resetRotations(){
-            m_CharacterTargetRot = Quaternion.identity;
-            m_CameraTargetRot = Quaternion.identity;
+            var qTo = Quaternion.AngleAxis(90f, Vector3.up);
+            m_CharacterTargetRot = Quaternion.identity * qTo;
+            m_CameraTargetRot = Quaternion.identity * qTo;
         }
         public void SetCursorLock(bool value)
         {

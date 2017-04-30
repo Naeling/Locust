@@ -39,20 +39,19 @@ public class GameManager : MonoBehaviour {
 	public void Restart () {
 		Debug.Log("Restart requested");
 		cameraController.resetRotations();
+		playerController.turboPoints = 0f;
 		playerRigidbody.velocity = new Vector3();
 		playerTransform.position = spawnPoint.position;
 		playerTransform.rotation = Quaternion.identity;
+		var qTo = Quaternion.AngleAxis(90f, Vector3.up);
+		playerTransform.rotation = Quaternion.identity * qTo;
 		timer.Reset();
 	}
 	public List<PlayerTimeEntry> LoadPreviousTimes() {
 		try {
-			// Get the file corresponding to the current player Name
 			var scoresFile = Application.persistentDataPath + "/" + playerName + "_times.dat";
-			// Open the file
 			using (var stream = File.Open(scoresFile, FileMode.Open)) {
-				// Binary Formatter
 				var bin = new BinaryFormatter();
-				// Deserialize the file contents into the List of PlayerTimeEntry
 				var times = (List<PlayerTimeEntry>)bin.Deserialize(stream);
 				return times;
 			}

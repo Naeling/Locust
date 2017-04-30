@@ -37,15 +37,19 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 	public void Restart () {
-		Debug.Log("Restart requested");
 		cameraController.resetRotations();
 		playerController.turboPoints = 0f;
 		playerRigidbody.velocity = new Vector3();
 		playerTransform.position = spawnPoint.position;
 		playerTransform.rotation = Quaternion.identity;
-		var qTo = Quaternion.AngleAxis(90f, Vector3.up);
+		var qTo = Quaternion.AngleAxis(180f, Vector3.up);
 		playerTransform.rotation = Quaternion.identity * qTo;
 		timer.Reset();
+		// Debug.Log("IsWallRunning:" + playerController.isWallRunning);
+		// Debug.Log("hasJustWallJumped:" + playerController.hasJustWallJumped);
+		// Debug.Log("IsWallToLeftOrRight:" + playerController.IsWallToLeftOrRight());
+		// Debug.Log("Running: " + playerController.Running);
+		// IsWallToLeftOrRight() && movementSettings.Running && !isWallRunning && !hasJustWallJumped
 	}
 	public List<PlayerTimeEntry> LoadPreviousTimes() {
 		try {

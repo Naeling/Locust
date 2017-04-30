@@ -170,7 +170,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_Jump = true;
             }
             if (CrossPlatformInputManager.GetButton("Turbo") && !m_Turbo) {
-                Debug.Log("Turbo requested");
+                //Debug.Log("Turbo requested");
                 m_Turbo = true;
             } else {
                 // Reload Turbo
@@ -261,7 +261,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                                 if (turboPoints > 0){
                                     // Consume turboPoints
                                     turboPoints -= Time.fixedDeltaTime * turboConsumptionMultiplier;
-                                    Debug.Log(turboPoints);
+                                    //Debug.Log(turboPoints);
                                     if (turboPoints < 0) {
                                         turboPoints = 0f;
                                     }
@@ -314,6 +314,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     isWallRunning = true;
                     hasDoubleJumped = false;
                 } else {
+                    // Debug.Log("IsWallRunning:" + isWallRunning);
+            		// Debug.Log("hasJustWallJumped:" + hasJustWallJumped);
+            		Debug.Log("IsWallToLeftOrRight:" + IsWallToLeftOrRight());
+            		// Debug.Log("Running: " + Running);
                     if (!IsWallToLeftOrRight()){
                         isWallRunning = false;
                     }
@@ -461,7 +465,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_Jumping = false;
             }
         }
-        private Boolean IsWallToLeftOrRight(){
+        public Boolean IsWallToLeftOrRight(){
             //Debug.Log(mask);
             return (IsWallToLeft() || IsWallToRight());
         }

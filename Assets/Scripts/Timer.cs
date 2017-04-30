@@ -20,4 +20,7 @@ public class Timer : MonoBehaviour {
 	public void Reset () {
 		timer = 0f;
 	}
+	public float GetTimer() {
+		return timer;
+	}
 }

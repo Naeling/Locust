@@ -93,10 +93,12 @@ Assets/SampleScenes/Menu/Scripts/SceneAndURLLoader.cs
 "Assets/Scripts/Character Controllers/FirstPersonController.cs"
 "Assets/Scripts/Character Controllers/RigidbodyFirstPersonController.cs"
 Assets/Scripts/GameManager.cs
+Assets/Scripts/Goal.cs
 Assets/Scripts/HeadBob.cs
 Assets/Scripts/MouseLook.cs
 Assets/Scripts/ObjectMover/ObjectMover.cs
 Assets/Scripts/ObjectMover/Translation.cs
+Assets/Scripts/PlayerTimeEntry.cs
 Assets/Scripts/Timer.cs
 Assets/Scripts/Turbo.cs
 -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Runtime.Serialization.dll"

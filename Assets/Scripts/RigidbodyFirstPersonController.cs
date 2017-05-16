@@ -180,7 +180,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
 
    
-            if (CrossPlatformInputManager.GetButton("Turbo") && !m_Turbo) {
+            if ((CrossPlatformInputManager.GetButton("Turbo") || CrossPlatformInputManager.GetAxis("Turbo") == 1) && !m_Turbo) {
                 //Debug.Log("Turbo requested");
                 m_Turbo = true;
             } else {

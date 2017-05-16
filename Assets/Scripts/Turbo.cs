@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.Characters.FirstPerson;
 
-public class Turbo : MonoBehaviour {
+public class Turbo : UnityEngine.MonoBehaviour {
 
 	public RigidbodyFirstPersonController playerController;
 	public float UiScaleMultiplier;

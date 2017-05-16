@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : UnityEngine.MonoBehaviour {
 
 	public GameObject player;
 	private Transform playerTransform;
@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour {
 		playerRigidbody = player.GetComponent<Rigidbody>();
 		cameraController = player.GetComponent<RigidbodyFirstPersonController>().mouseLook;
 		playerController = player.GetComponent<RigidbodyFirstPersonController>();
-		DisplayPreviousTimes();
+		//DisplayPreviousTimes();
 	}
 
 	void Update () {

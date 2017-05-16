@@ -304,7 +304,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_RigidBody.drag = 0f;
                 // INITIALIZE WALL RIDE
                 if (IsWallToLeftOrRight() && movementSettings.Running && !isWallRunning && !hasJustWallJumped){
-                    Debug.Log("WALLRIDE INITIALIZED");
+                    //Debug.Log("WALLRIDE INITIALIZED");
                     wallRunTimer = 0;
                     Vector3 forward = cam.transform.forward;
                     wallJumpTimer = 0f;
@@ -316,7 +316,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 } else {
                     // Debug.Log("IsWallRunning:" + isWallRunning);
             		// Debug.Log("hasJustWallJumped:" + hasJustWallJumped);
-            		Debug.Log("IsWallToLeftOrRight:" + IsWallToLeftOrRight());
+            		//Debug.Log("IsWallToLeftOrRight:" + IsWallToLeftOrRight());
             		// Debug.Log("Running: " + Running);
                     if (!IsWallToLeftOrRight()){
                         isWallRunning = false;
@@ -343,12 +343,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
                         Vector3 jump = new Vector3(0f, wallJumpUpMultiplier * movementSettings.JumpForce, 0f);
                         m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
                         if (IsWallToRight()){
-                            Debug.Log("WALL JUMP");
+                            //Debug.Log("WALL JUMP");
                             Vector3 wallNormal = Vector3.Normalize(Vector3.Project(-cam.transform.right, GetRightWallNormal()));
                             m_RigidBody.AddForce(75f * wallNormal, ForceMode.Impulse);
                             m_RigidBody.AddForce(jump, ForceMode.Impulse);
                         } else {
-                            Debug.Log("WALL JUMP");
+                            //Debug.Log("WALL JUMP");
                             Vector3 wallNormal = Vector3.Normalize(Vector3.Project(cam.transform.right, GetLeftWallNormal()));
                             m_RigidBody.AddForce(75f * wallNormal, ForceMode.Impulse);
                             m_RigidBody.AddForce(jump, ForceMode.Impulse);
@@ -379,7 +379,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             if (Input.GetMouseButtonDown(0)){
                 foreach(ObjectSwitcher switcher in switchables){
-                    Debug.Log(switcher);
+                    //Debug.Log(switcher);
                     switcher.Switch();
                 }
             }

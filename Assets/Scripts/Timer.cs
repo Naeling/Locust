@@ -15,7 +15,7 @@ public class Timer : MonoBehaviour {
 	}
  	private void Update () {
 		timer += Time.deltaTime;
-		timerText.text = System.Math.Round((decimal)timer, 2).ToString();
+		timerText.text = "Time : " + System.Math.Round((decimal)timer, 2).ToString();
 	}
 	public void Reset () {
 		timer = 0f;

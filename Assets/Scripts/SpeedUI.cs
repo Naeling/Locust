@@ -16,7 +16,7 @@ public class SpeedUI : UnityEngine.MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		speedText.text = System.Math.Round((decimal)playerRigidbody.velocity.magnitude, 2).ToString();
+		speedText.text = "Vitesse : " + System.Math.Round((decimal)playerRigidbody.velocity.magnitude, 2).ToString();
 
 	}
 }

@@ -106,6 +106,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public float turboMax;
         public float turboConsumptionMultiplier;
         public float airControlMultiplier;
+        public Boolean jumpWithTrigger;
 
         public List<ObjectSwitcher> switchables;
 
@@ -158,6 +159,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             canTurbo = true;
             turboPoints = 0f;
             turboMax = 100f;
+            jumpWithTrigger = false;
         }
 
 
@@ -165,10 +167,19 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             RotateView();
 
-            if (CrossPlatformInputManager.GetButtonDown("Jump") && !m_Jump)
+            if ((CrossPlatformInputManager.GetButtonDown("Jump") || CrossPlatformInputManager.GetAxis("Jump") == 1  ) && !m_Jump)
             {
-                m_Jump = true;
+                if (CrossPlatformInputManager.GetAxis("Jump") == 1 && jumpWithTrigger == false)
+                {
+                    m_Jump = true;
+                    jumpWithTrigger = true;
+                } else if (CrossPlatformInputManager.GetAxis("Jump") == 0)
+                {
+                    m_Jump = true;
+                }
             }
+
+   
             if (CrossPlatformInputManager.GetButton("Turbo") && !m_Turbo) {
                 //Debug.Log("Turbo requested");
                 m_Turbo = true;
@@ -387,6 +398,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Jump = false;
             if (!CrossPlatformInputManager.GetButton("Turbo") && m_Turbo) {
                 m_Turbo = false;
+            }
+
+            if (CrossPlatformInputManager.GetAxis("Jump") == 0)
+            {
+                jumpWithTrigger = false;
             }
         }
 

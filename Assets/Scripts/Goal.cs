@@ -8,9 +8,9 @@ public class Goal : MonoBehaviour {
 
 	void OnTriggerEnter (Collider other){
 		if (other.CompareTag("Player")){
-			// Call a method to save the time
-			gameManager.Restart();
-			gameManager.SaveTime();
+            // Call a method to save the time
+            gameManager.SaveTime();
+            gameManager.Restart();
 		}
 	}
 }

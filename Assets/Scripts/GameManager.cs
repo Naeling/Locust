@@ -20,6 +20,9 @@ public class GameManager : UnityEngine.MonoBehaviour {
 	private RigidbodyFirstPersonController playerController;
 	public Timer timer;
 	public String playerName;
+    private Boolean isPause;
+    public Canvas gameUI;
+    public Canvas pauseUI;
 
 
 	void Start () {
@@ -27,7 +30,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		playerRigidbody = player.GetComponent<Rigidbody>();
 		cameraController = player.GetComponent<RigidbodyFirstPersonController>().mouseLook;
 		playerController = player.GetComponent<RigidbodyFirstPersonController>();
-		//DisplayPreviousTimes();
+		DisplayPreviousTimes();
 	}
 
 	void Update () {
@@ -35,7 +38,38 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		{
 			Restart();
 		}
-	}
+        if (CrossPlatformInputManager.GetButtonDown("Pause"))
+        {
+            isPause = !isPause;
+        }
+
+        if (isPause)
+        {
+            Time.timeScale = 0;
+            if (gameUI.enabled)
+            {
+                gameUI.enabled = false;
+            }
+            if (!pauseUI.enabled)
+            {
+                pauseUI.enabled = true;
+            }
+        }
+        else
+        {
+            Time.timeScale = 1;
+            if (!gameUI.enabled)
+            {
+                gameUI.enabled = true;
+            }
+            if (pauseUI.enabled)
+            {
+                pauseUI.enabled = false;
+            }
+        }
+            
+    }
+
 	public void Restart () {
 		cameraController.resetRotations();
 		playerController.turboPoints = 0f;
@@ -45,11 +79,6 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		var qTo = Quaternion.AngleAxis(180f, Vector3.up);
 		playerTransform.rotation = Quaternion.identity * qTo;
 		timer.Reset();
-		// Debug.Log("IsWallRunning:" + playerController.isWallRunning);
-		// Debug.Log("hasJustWallJumped:" + playerController.hasJustWallJumped);
-		// Debug.Log("IsWallToLeftOrRight:" + playerController.IsWallToLeftOrRight());
-		// Debug.Log("Running: " + playerController.Running);
-		// IsWallToLeftOrRight() && movementSettings.Running && !isWallRunning && !hasJustWallJumped
 	}
 	public List<PlayerTimeEntry> LoadPreviousTimes() {
 		try {
@@ -65,6 +94,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
 			return new List<PlayerTimeEntry>();
 		}
 	}
+
 	// use a decimal
  	public void SaveTime() {
 		var time = timer.GetTimer();
@@ -74,6 +104,8 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		newTime.time = (Decimal)time;
 		var bFormatter = new BinaryFormatter();
 		var filePath = Application.persistentDataPath + "/" + playerName + "_times.dat";
+        Debug.Log("Timer time: " + time);
+        Debug.Log("Time registered: " + newTime.time);
 		using (var file = File.Open(filePath, FileMode.Create)) {
 			times.Add(newTime);
 			bFormatter.Serialize(file, times);
@@ -82,10 +114,10 @@ public class GameManager : UnityEngine.MonoBehaviour {
 	public void DisplayPreviousTimes() {
 		var times = LoadPreviousTimes();
 		var topThree = times.OrderBy(time => time.time).Take(3);
-		var timesLabel = GameObject.Find("PreviousTimes").GetComponent<Text>();
-		timesLabel.text = "BEST TIMES \n";
+		var timesLabel = GameObject.Find("HighScoresList").GetComponent<Text>();
+		timesLabel.text = "";
 		foreach (var time in topThree) {
-			timesLabel.text += time.entryDate.ToShortDateString() + ": " + time.time + "\n";
+			timesLabel.text += time.time + "\n";
 		}
 	}
 }

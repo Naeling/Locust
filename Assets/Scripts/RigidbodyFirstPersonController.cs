@@ -107,6 +107,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public float turboConsumptionMultiplier;
         public float airControlMultiplier;
         public Boolean jumpWithTrigger;
+        public Boolean isPause;
 
         public List<ObjectSwitcher> switchables;
 
@@ -160,11 +161,21 @@ namespace UnityStandardAssets.Characters.FirstPerson
             turboPoints = 0f;
             turboMax = 100f;
             jumpWithTrigger = false;
+            isPause = false;
         }
 
 
         private void Update()
         {
+            //if (CrossPlatformInputManager.GetButtonDown("Pause")){
+            //    isPause = !isPause;
+            //}
+
+            //if (isPause)
+            //    Time.timeScale = 0;
+            //else
+            //    Time.timeScale = 1;
+
             RotateView();
 
             if ((CrossPlatformInputManager.GetButtonDown("Jump") || CrossPlatformInputManager.GetAxis("Jump") == 1  ) && !m_Jump)

@@ -23,6 +23,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
     private Boolean isPause;
     public Canvas gameUI;
     public Canvas pauseUI;
+    private Animator UiAnimator;
 
 
 	void Start () {
@@ -30,6 +31,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		playerRigidbody = player.GetComponent<Rigidbody>();
 		cameraController = player.GetComponent<RigidbodyFirstPersonController>().mouseLook;
 		playerController = player.GetComponent<RigidbodyFirstPersonController>();
+        UiAnimator = pauseUI.GetComponent<Animator>();
 		DisplayPreviousTimes();
 	}
 
@@ -41,6 +43,18 @@ public class GameManager : UnityEngine.MonoBehaviour {
         if (CrossPlatformInputManager.GetButtonDown("Pause"))
         {
             isPause = !isPause;
+            if (isPause)
+            {
+                // Play animation
+                UiAnimator.SetBool("isPaused", true);
+                UiAnimator.SetBool("isDepaused", false);
+                
+            } else
+            {
+                // Play animation backward
+                UiAnimator.SetBool("isDepaused", true);
+                UiAnimator.SetBool("isPaused", false);
+            }
         }
 
         if (isPause)
@@ -103,6 +117,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		newTime.entryDate = DateTime.Now;
 		newTime.time = (Decimal)time;
 		var bFormatter = new BinaryFormatter();
+        Debug.Log(Application.persistentDataPath);
 		var filePath = Application.persistentDataPath + "/" + playerName + "_times.dat";
         Debug.Log("Timer time: " + time);
         Debug.Log("Time registered: " + newTime.time);
@@ -113,7 +128,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
 	}
 	public void DisplayPreviousTimes() {
 		var times = LoadPreviousTimes();
-		var topThree = times.OrderBy(time => time.time).Take(3);
+		var topThree = times.OrderBy(time => time.time).Take(20);
 		var timesLabel = GameObject.Find("HighScoresList").GetComponent<Text>();
 		timesLabel.text = "";
 		foreach (var time in topThree) {

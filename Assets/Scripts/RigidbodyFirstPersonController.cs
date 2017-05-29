@@ -89,6 +89,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private Vector3 m_GroundContactNormal;
         private bool m_Jump, m_Turbo, m_PreviouslyGrounded, m_Jumping, m_IsGrounded, canTurbo;
 
+        public bool immobilize;
         public float radius;
         public float rayCastLengthCheck;
         public LayerMask layer;
@@ -190,7 +191,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 }
             }
 
-   
+
             if ((CrossPlatformInputManager.GetButton("Turbo") || CrossPlatformInputManager.GetAxis("Turbo") == 1) && !m_Turbo) {
                 //Debug.Log("Turbo requested");
                 m_Turbo = true;
@@ -203,220 +204,220 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 }
             }
         }
-
+		// Trouver l'endroit ou la velocité est réinitialisée.
+		// Probablement un test de comparaison de vitesse par rapport à un cap
+		// En fait il faut passer d'une reinitialisation à une diminution graduelle
 
         private void FixedUpdate()
         {
-            GroundCheck();
-            Vector2 input = GetInput();
+            if (!immobilize){
+                GroundCheck();
+                Vector2 input = GetInput();
 
-            if ((Mathf.Abs(input.x) > float.Epsilon || Mathf.Abs(input.y) > float.Epsilon) && (advancedSettings.airControl || m_IsGrounded))
-            {
-                // always move along the camera forward as it is the direction that it being aimed at
-                Vector3 desiredMove = cam.transform.forward*input.y + cam.transform.right*input.x;
-                desiredMove = Vector3.ProjectOnPlane(desiredMove, m_GroundContactNormal).normalized;
-                if (m_IsGrounded){
-                    if (!m_Turbo) {
-                        desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed;
-                        desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed;
+                if ((Mathf.Abs(input.x) > float.Epsilon || Mathf.Abs(input.y) > float.Epsilon) && (advancedSettings.airControl || m_IsGrounded))
+                {
+                    // always move along the camera forward as it is the direction that it being aimed at
+                    Vector3 desiredMove = cam.transform.forward*input.y + cam.transform.right*input.x;
+                    desiredMove = Vector3.ProjectOnPlane(desiredMove, m_GroundContactNormal).normalized;
+                    if (m_IsGrounded){
+                        if (!m_Turbo) {
+                            desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed;
+                            desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed;
+                        } else {
+                            desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed * 1.3f;
+                            desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed * 1.3f;
+                        }
                     } else {
-                        desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed * 1.3f;
-                        desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed * 1.3f;
+                        if (isWallRunning){
+                            desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed * 0.1f;
+                            desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed * 0.1f;
+                        } else {
+                            desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed * airControlMultiplier;
+                            desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed * airControlMultiplier;
+                        }
                     }
-                } else {
-                    if (isWallRunning){
-                        desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed * 0.1f;
-                        desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed * 0.1f;
-                    } else {
-                        desiredMove.x = desiredMove.x*movementSettings.CurrentTargetSpeed * airControlMultiplier;
-                        desiredMove.z = desiredMove.z*movementSettings.CurrentTargetSpeed * airControlMultiplier;
-                    }
-                }
-                desiredMove.y = desiredMove.y*movementSettings.CurrentTargetSpeed;
-                // Jump
-                if ( input.y >= 0){
-                    // Current speed already superior to the target speed
-                    if (m_RigidBody.velocity.sqrMagnitude >= (movementSettings.CurrentTargetSpeed*movementSettings.CurrentTargetSpeed))
-                    {
-                        // Not grounded
-                        if (!m_IsGrounded){
-                            // Wall Running
-                            if (isWallRunning){
-                                // Doesn't want to wall jump
-                                if (!m_Jump) {
-                                    previouslyWallRunning = true;
-                                    // Speed inferior to the wall run speed cap
-                                    if (m_RigidBody.velocity.sqrMagnitude < 1.5 * (movementSettings.CurrentTargetSpeed*movementSettings.CurrentTargetSpeed)){
-                                        if (IsWallToLeft()){
-                                            desiredMove = Vector3.Project(desiredMove, GetLeftWallForward());
+                    desiredMove.y = desiredMove.y*movementSettings.CurrentTargetSpeed;
+                    // Player wants to go forward
+                    if ( input.y >= 0){
+                        // Current speed already superior to the target speed
+                        if (m_RigidBody.velocity.sqrMagnitude >= (movementSettings.CurrentTargetSpeed*movementSettings.CurrentTargetSpeed))
+                        {
+                            // Not grounded
+                            if (!m_IsGrounded){
+                                // Wall Running
+                                if (isWallRunning){
+                                    // Doesn't want to wall jump
+                                    if (!m_Jump) {
+                                        previouslyWallRunning = true;
+                                        // Speed inferior to the wall run speed cap
+                                        if (m_RigidBody.velocity.sqrMagnitude < 1.5 * (movementSettings.CurrentTargetSpeed*movementSettings.CurrentTargetSpeed)){
+                                            if (IsWallToLeft()){
+                                                desiredMove = Vector3.Project(desiredMove, GetLeftWallForward());
+                                            } else {
+                                                desiredMove = Vector3.Project(desiredMove, GetRightWallForward());
+                                            }
                                         } else {
-                                            desiredMove = Vector3.Project(desiredMove, GetRightWallForward());
+                                            // Project the current velocity on the wall direction
+                                            desiredMove = new Vector3();
+                                            if (IsWallToLeft()){
+                                                Vector3 forward = GetLeftWallForward();
+                                                forward = Vector3.ProjectOnPlane(forward, Vector3.up);
+                                                float gravity = m_RigidBody.velocity.y;
+                                                m_RigidBody.velocity = Vector3.Project(m_RigidBody.velocity, forward);
+                                                m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, gravity, m_RigidBody.velocity.z);
+    										} else if (IsWallToRight()) {
+                                                Vector3 forward = GetRightWallForward();
+                                                forward = Vector3.ProjectOnPlane(forward, Vector3.up);
+                                                float gravity = m_RigidBody.velocity.y;
+                                                m_RigidBody.velocity = Vector3.Project(m_RigidBody.velocity, forward);
+                                                m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, gravity, m_RigidBody.velocity.z);
+                                            }
                                         }
-                                    } else {
-                                        // Project the current velocity on the wall direction
-                                        desiredMove = new Vector3();
-                                        if (IsWallToLeft()){
-                                            Vector3 forward = GetLeftWallForward();
-                                            forward = Vector3.ProjectOnPlane(forward, Vector3.up);
-                                            float gravity = m_RigidBody.velocity.y;
-                                            m_RigidBody.velocity = Vector3.Project(m_RigidBody.velocity, forward);
-                                            m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, gravity, m_RigidBody.velocity.z);
-                                        } else {
-                                            Vector3 forward = GetRightWallForward();
-                                            forward = Vector3.ProjectOnPlane(forward, Vector3.up);
-                                            float gravity = m_RigidBody.velocity.y;
-                                            m_RigidBody.velocity = Vector3.Project(m_RigidBody.velocity, forward);
-                                            m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, gravity, m_RigidBody.velocity.z);
-                                        }
+                                        // Setup the length of a wallRun here
+                                        // Adjust Gravity strength during a wall Run
+                                        desiredMove += new Vector3(0f, 2.5f, 0f);
                                     }
-                                    // Setup the length of a wallRun here
-                                    // Adjust Gravity strength during a wall Run
-                                    desiredMove += new Vector3(0f, 2.5f, 0f);
+                                } else {
+                                    desiredMove = Vector3.Project(desiredMove, cam.transform.right);
                                 }
                             } else {
-                                desiredMove = Vector3.Project(desiredMove, cam.transform.right);
-                            }
-                        } else {
-                            if (!m_Turbo || !canTurbo || turboPoints == 0f){
-                                desiredMove = new Vector3();
-                            } else {
-                                if (turboPoints > 0){
-                                    // Consume turboPoints
-                                    turboPoints -= Time.fixedDeltaTime * turboConsumptionMultiplier;
-                                    //Debug.Log(turboPoints);
-                                    if (turboPoints < 0) {
-                                        turboPoints = 0f;
+                                if (!m_Turbo || !canTurbo || turboPoints == 0f){
+                                    desiredMove = new Vector3();
+                                } else {
+                                    if (turboPoints > 0){
+                                        // Consume turboPoints
+                                        turboPoints -= Time.fixedDeltaTime * turboConsumptionMultiplier;
+                                        //Debug.Log(turboPoints);
+                                        if (turboPoints < 0) {
+                                            turboPoints = 0f;
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                m_RigidBody.AddForce(desiredMove*SlopeMultiplier(), ForceMode.Impulse);
+                    m_RigidBody.AddForce(desiredMove*SlopeMultiplier(), ForceMode.Impulse);
 
-            }
-            if (m_IsGrounded)
-            {
-                isWallRunning = false;
-                m_RigidBody.drag = 5f;
-                hasDoubleJumped = false;
-                if (m_Jump)
+                }
+                if (m_IsGrounded)
                 {
-                    m_RigidBody.drag = 0f;
-                    m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
-                    m_RigidBody.AddForce(new Vector3(0f, movementSettings.JumpForce, 0f), ForceMode.Impulse);
-                    m_Jumping = true;
-                }
-
-                if (!m_Jumping && Mathf.Abs(input.x) < float.Epsilon && Mathf.Abs(input.y) < float.Epsilon && m_RigidBody.velocity.magnitude < 1f)
-                {
-                    m_RigidBody.Sleep();
-                }
-            }
-            else
-            {
-                if (hasJustWallJumped && wallRunTimer < wallRunDelay){
-                    wallRunTimer += Time.fixedDeltaTime;
-                } else {
-                    if (wallRunTimer >= wallRunDelay){
-                        isWallRunning = false;
-                        hasJustWallJumped = false;
-                    }
-                }
-                m_RigidBody.drag = 0f;
-                // INITIALIZE WALL RIDE
-                if (IsWallToLeftOrRight() && movementSettings.Running && !isWallRunning && !hasJustWallJumped){
-                    //Debug.Log("WALLRIDE INITIALIZED");
-                    wallRunTimer = 0;
-                    Vector3 forward = cam.transform.forward;
-                    wallJumpTimer = 0f;
-                    m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
-                    m_RigidBody.AddForce(new Vector3(0f, 0.8f * movementSettings.JumpForce, 0f), ForceMode.Impulse);
-                    m_Jumping = true;
-                    isWallRunning = true;
+                    isWallRunning = false;
+                    m_RigidBody.drag = 5f;
                     hasDoubleJumped = false;
-                } else {
-                    // Debug.Log("IsWallRunning:" + isWallRunning);
-            		// Debug.Log("hasJustWallJumped:" + hasJustWallJumped);
-            		//Debug.Log("IsWallToLeftOrRight:" + IsWallToLeftOrRight());
-            		// Debug.Log("Running: " + Running);
-                    if (!IsWallToLeftOrRight()){
-                        isWallRunning = false;
-                    }
-                }
-                // WALL JUMP
-                if (isWallRunning){
-                    wallJumpTimer += Time.fixedDeltaTime;
-                    // Smoothly rotate the camera
-                    if (wallJumpTimer < wallJumpDelay){
-                        Quaternion qTo = Quaternion.identity;
-                        if(IsWallToLeft()){
-                            qTo = Quaternion.AngleAxis(-10f, cam.transform.forward);
-                            qTo = qTo * cam.transform.rotation;
-                        } else {
-                            qTo = Quaternion.AngleAxis(10f, cam.transform.forward);
-                            qTo = qTo * cam.transform.rotation;
-                        }
-                        cam.transform.rotation = Quaternion.Slerp(cam.transform.rotation,qTo, 5f * Time.fixedDeltaTime);
-                    }
-                    if (m_Jump && wallJumpTimer > wallJumpDelay){
-                        hasJustWallJumped = true;
-                        isWallRunning = false;
-                        Vector3 jump = new Vector3(0f, wallJumpUpMultiplier * movementSettings.JumpForce, 0f);
+                    if (m_Jump)
+                    {
+                        m_RigidBody.drag = 0f;
                         m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
-                        if (IsWallToRight()){
-                            //Debug.Log("WALL JUMP");
-                            Vector3 wallNormal = Vector3.Normalize(Vector3.Project(-cam.transform.right, GetRightWallNormal()));
-                            m_RigidBody.AddForce(75f * wallNormal, ForceMode.Impulse);
-                            m_RigidBody.AddForce(jump, ForceMode.Impulse);
-                        } else {
-                            //Debug.Log("WALL JUMP");
-                            Vector3 wallNormal = Vector3.Normalize(Vector3.Project(cam.transform.right, GetLeftWallNormal()));
-                            m_RigidBody.AddForce(75f * wallNormal, ForceMode.Impulse);
-                            m_RigidBody.AddForce(jump, ForceMode.Impulse);
+                        m_RigidBody.AddForce(new Vector3(0f, movementSettings.JumpForce, 0f), ForceMode.Impulse);
+                        m_Jumping = true;
+                    }
+
+                    if (!m_Jumping && Mathf.Abs(input.x) < float.Epsilon && Mathf.Abs(input.y) < float.Epsilon && m_RigidBody.velocity.magnitude < 1f)
+                    {
+                        m_RigidBody.Sleep();
+                    }
+                }
+                else
+                {
+                    if (hasJustWallJumped && wallRunTimer < wallRunDelay){
+                        wallRunTimer += Time.fixedDeltaTime;
+                    } else {
+                        if (wallRunTimer >= wallRunDelay){
+                            isWallRunning = false;
+                            hasJustWallJumped = false;
                         }
                     }
-                } else {
-                    // DOUBLE JUMP
-                    if (!hasDoubleJumped && m_Jump){
-                        hasDoubleJumped = true;
+                    m_RigidBody.drag = 0f;
+                    // INITIALIZE WALL RIDE
+                    if (IsWallToLeftOrRight() && movementSettings.Running && !isWallRunning && !hasJustWallJumped){
+                        //Debug.Log("WALLRIDE INITIALIZED");
+                        wallRunTimer = 0;
                         Vector3 forward = cam.transform.forward;
-                        forward = Vector3.ProjectOnPlane(forward, Vector3.up);
-                        forward = Vector3.Scale( new Vector3(m_RigidBody.velocity.magnitude*4, 0f, m_RigidBody.velocity.magnitude*4), forward);
-                        Vector3 jump = new Vector3(0f, movementSettings.JumpForce, 0f);
-                        m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x / 2f, 0f, m_RigidBody.velocity.z / 2f);
-                        m_RigidBody.AddForce(forward + jump, ForceMode.Impulse);
+                        wallJumpTimer = 0f;
+                        m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
+                        m_RigidBody.AddForce(new Vector3(0f, 0.8f * movementSettings.JumpForce, 0f), ForceMode.Impulse);
+                        m_Jumping = true;
+                        isWallRunning = true;
+                        hasDoubleJumped = false;
+                    } else {
+                        if (!IsWallToLeftOrRight()){
+                            isWallRunning = false;
+                        }
+                    }
+                    // WALL JUMP
+                    if (isWallRunning){
+                        wallJumpTimer += Time.fixedDeltaTime;
+                        // Smoothly rotate the camera
+                        if (wallJumpTimer < wallJumpDelay){
+                            Quaternion qTo = Quaternion.identity;
+                            if(IsWallToLeft()){
+                                qTo = Quaternion.AngleAxis(-10f, cam.transform.forward);
+                                qTo = qTo * cam.transform.rotation;
+                            } else {
+                                qTo = Quaternion.AngleAxis(10f, cam.transform.forward);
+                                qTo = qTo * cam.transform.rotation;
+                            }
+                            cam.transform.rotation = Quaternion.Slerp(cam.transform.rotation,qTo, 5f * Time.fixedDeltaTime);
+                        }
+                        if (m_Jump && wallJumpTimer > wallJumpDelay){
+                            hasJustWallJumped = true;
+                            isWallRunning = false;
+                            Vector3 jump = new Vector3(0f, wallJumpUpMultiplier * movementSettings.JumpForce, 0f);
+                            m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
+                            if (IsWallToRight()){
+                                //Debug.Log("WALL JUMP");
+                                Vector3 wallNormal = Vector3.Normalize(Vector3.Project(-cam.transform.right, GetRightWallNormal()));
+                                m_RigidBody.AddForce(75f * wallNormal, ForceMode.Impulse);
+                                m_RigidBody.AddForce(jump, ForceMode.Impulse);
+                            } else {
+                                //Debug.Log("WALL JUMP");
+                                Vector3 wallNormal = Vector3.Normalize(Vector3.Project(cam.transform.right, GetLeftWallNormal()));
+                                m_RigidBody.AddForce(75f * wallNormal, ForceMode.Impulse);
+                                m_RigidBody.AddForce(jump, ForceMode.Impulse);
+                            }
+                        }
+                    } else {
+                        // DOUBLE JUMP
+                        if (!hasDoubleJumped && m_Jump){
+                            hasDoubleJumped = true;
+                            Vector3 forward = cam.transform.forward;
+                            forward = Vector3.ProjectOnPlane(forward, Vector3.up);
+                            forward = Vector3.Scale( new Vector3(m_RigidBody.velocity.magnitude*4, 0f, m_RigidBody.velocity.magnitude*4), forward);
+                            Vector3 jump = new Vector3(0f, movementSettings.JumpForce, 0f);
+                            m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x / 2f, 0f, m_RigidBody.velocity.z / 2f);
+                            m_RigidBody.AddForce(forward + jump, ForceMode.Impulse);
+                        }
+                    }
+                    // Landing
+                    if (m_PreviouslyGrounded && !m_Jumping)
+                    {
+                        StickToGroundHelper();
                     }
                 }
-                // Landing
-                if (m_PreviouslyGrounded && !m_Jumping)
-                {
-                    StickToGroundHelper();
+                // test if the player was wallRunning on the last frame and isn't on the current frame to rotate the camera back
+                if (previouslyWallRunning && !isWallRunning){
+                    previouslyWallRunning = false;
+                    Vector3 forward = cam.transform.forward;
                 }
-            }
-            // test if the player was wallRunning on the last frame and isn't on the current frame to rotate the camera back
-            if (previouslyWallRunning && !isWallRunning){
-                previouslyWallRunning = false;
-                Vector3 forward = cam.transform.forward;
-            }
-            if (Input.GetMouseButtonDown(0)){
-                foreach(ObjectSwitcher switcher in switchables){
-                    //Debug.Log(switcher);
-                    switcher.Switch();
+                if (Input.GetMouseButtonDown(0)){
+    				Debug.Log ("Input received");
+    				foreach(ObjectSwitcher switcher in switchables){
+                        Debug.Log(switcher);
+                        switcher.Switch();
+                    }
                 }
-            }
-            // Reset player's inputs
-            m_Jump = false;
-            if (!CrossPlatformInputManager.GetButton("Turbo") && m_Turbo) {
-                m_Turbo = false;
-            }
+                // Reset player's inputs
+                m_Jump = false;
+                if (!CrossPlatformInputManager.GetButton("Turbo") && m_Turbo) {
+                    m_Turbo = false;
+                }
 
-            if (CrossPlatformInputManager.GetAxis("Jump") == 0)
-            {
-                jumpWithTrigger = false;
+                if (CrossPlatformInputManager.GetAxis("Jump") == 0)
+                {
+                    jumpWithTrigger = false;
+                }
             }
         }
-
 
         private float SlopeMultiplier()
         {
@@ -491,6 +492,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 m_Jumping = false;
             }
+        }
+
+        // Immobilize the player
+        // Prevent inputs from the player
+        public void Immobilize(){
+            m_RigidBody.velocity = new Vector3();
+            m_RigidBody.useGravity = false;
+            immobilize = true;
         }
         public Boolean IsWallToLeftOrRight(){
             //Debug.Log(mask);

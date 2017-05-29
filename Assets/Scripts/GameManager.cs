@@ -48,7 +48,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
                 // Play animation
                 UiAnimator.SetBool("isPaused", true);
                 UiAnimator.SetBool("isDepaused", false);
-                
+
             } else
             {
                 // Play animation backward
@@ -81,10 +81,12 @@ public class GameManager : UnityEngine.MonoBehaviour {
                 pauseUI.enabled = false;
             }
         }
-            
+
     }
 
 	public void Restart () {
+		playerController.immobilize = false;
+		playerRigidbody.useGravity = true;
 		cameraController.resetRotations();
 		playerController.turboPoints = 0f;
 		playerRigidbody.velocity = new Vector3();

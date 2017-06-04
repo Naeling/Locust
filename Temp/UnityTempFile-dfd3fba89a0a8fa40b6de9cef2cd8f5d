@@ -98,6 +98,7 @@ Assets/Scripts/ControlsList.cs
 Assets/Scripts/Death.cs
 Assets/Scripts/GameManager.cs
 Assets/Scripts/Goal.cs
+Assets/Scripts/HighPassFilter.cs
 Assets/Scripts/Menu.cs
 Assets/Scripts/ObjectMover/ObjectMover.cs
 Assets/Scripts/ObjectMover/Translation.cs

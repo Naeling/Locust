@@ -57,6 +57,7 @@
      <Compile Include="Assets\Scripts\Death.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\Goal.cs" />
+     <Compile Include="Assets\Scripts\HighPassFilter.cs" />
      <Compile Include="Assets\Scripts\Menu.cs" />
      <Compile Include="Assets\Scripts\ObjectMover\ObjectMover.cs" />
      <Compile Include="Assets\Scripts\ObjectMover\Translation.cs" />

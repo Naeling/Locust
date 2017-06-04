@@ -64,6 +64,7 @@
      <Compile Include="Assets\Scripts\RigidbodyFirstPersonController.cs" />
      <Compile Include="Assets\Scripts\SoundManager.cs" />
      <Compile Include="Assets\Scripts\SpeedUI.cs" />
+     <Compile Include="Assets\Scripts\StartArea.cs" />
      <Compile Include="Assets\Scripts\Timer.cs" />
      <Compile Include="Assets\Scripts\Turbo.cs" />
      <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />

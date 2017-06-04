@@ -16,6 +16,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
 	private Transform playerTransform;
 	private Rigidbody playerRigidbody;
 	public Transform spawnPoint;
+	public Transform checkPoint;
 	private MouseLook cameraController;
 	private RigidbodyFirstPersonController playerController;
 	public Timer timer;
@@ -24,6 +25,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
     public Canvas gameUI;
     public Canvas pauseUI;
     private Animator UiAnimator;
+	public Boolean checkpointReached;
 
 
 	void Start () {
@@ -32,6 +34,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		cameraController = player.GetComponent<RigidbodyFirstPersonController>().mouseLook;
 		playerController = player.GetComponent<RigidbodyFirstPersonController>();
         UiAnimator = pauseUI.GetComponent<Animator>();
+		checkpointReached = false;
 		DisplayPreviousTimes();
 	}
 
@@ -90,7 +93,11 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		cameraController.resetRotations();
 		playerController.turboPoints = 0f;
 		playerRigidbody.velocity = new Vector3();
-		playerTransform.position = spawnPoint.position;
+		if (!checkpointReached){
+			playerTransform.position = spawnPoint.position;
+		} else {
+			playerTransform.position = checkPoint.position;
+		}
 		playerTransform.rotation = Quaternion.identity;
 		var qTo = Quaternion.AngleAxis(180f, Vector3.up);
 		playerTransform.rotation = Quaternion.identity * qTo;

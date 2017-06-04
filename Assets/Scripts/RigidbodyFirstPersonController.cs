@@ -109,6 +109,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public float airControlMultiplier;
         public Boolean jumpWithTrigger;
         public Boolean isPause;
+        public Boolean m_Switch;
 
         public List<ObjectSwitcher> switchables;
 
@@ -163,20 +164,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
             turboMax = 100f;
             jumpWithTrigger = false;
             isPause = false;
+            m_Switch = false;
         }
 
 
         private void Update()
         {
-            //if (CrossPlatformInputManager.GetButtonDown("Pause")){
-            //    isPause = !isPause;
-            //}
-
-            //if (isPause)
-            //    Time.timeScale = 0;
-            //else
-            //    Time.timeScale = 1;
-
             RotateView();
 
             if ((CrossPlatformInputManager.GetButtonDown("Jump") || CrossPlatformInputManager.GetAxis("Jump") == 1  ) && !m_Jump)
@@ -203,10 +196,17 @@ namespace UnityStandardAssets.Characters.FirstPerson
                         turboPoints = turboMax;
                 }
             }
+
+            if (Input.GetMouseButtonDown(0) || CrossPlatformInputManager.GetButton("Switch") && !m_Switch){
+                Debug.Log ("Switch input received");
+                m_Switch = true;
+                foreach(ObjectSwitcher switcher in switchables){
+                    switcher.Switch();
+                }
+            } else if (!Input.GetMouseButton(0) && !CrossPlatformInputManager.GetButton("Switch")) {
+                m_Switch = false;
+            }
         }
-		// Trouver l'endroit ou la velocité est réinitialisée.
-		// Probablement un test de comparaison de vitesse par rapport à un cap
-		// En fait il faut passer d'une reinitialisation à une diminution graduelle
 
         private void FixedUpdate()
         {
@@ -399,13 +399,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     previouslyWallRunning = false;
                     Vector3 forward = cam.transform.forward;
                 }
-                if (Input.GetMouseButtonDown(0)){
-    				Debug.Log ("Input received");
-    				foreach(ObjectSwitcher switcher in switchables){
-                        Debug.Log(switcher);
-                        switcher.Switch();
-                    }
-                }
+
                 // Reset player's inputs
                 m_Jump = false;
                 if (!CrossPlatformInputManager.GetButton("Turbo") && m_Turbo) {

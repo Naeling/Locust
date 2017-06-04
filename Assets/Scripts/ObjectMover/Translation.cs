@@ -28,22 +28,21 @@ public class Translation : ObjectSwitcher {
 			translationDirection = transform.forward;
 		}
 		state = true;
-		// This instruction is perfectly fine
+
+		// This part of the code should be ok. Just generate the point to reach based on the direction requested and the sign of the multiplier.
+		// A positive multiplier generate a direction opposite to the a negative multiplier
 		position1 = transform.position;
-		// This instruction should be sign independant thanks to translateDirection taking account for the sign
 		position2 = position1 + translationDirection * translationMultiplier;
 	}
 	public void FixedUpdate(){
-		if (state){
-			// Then the object should be translating to position1
-			if ( Vector3.Distance(position1, transform.position) > Vector3.kEpsilon * 4000){
-				transform.Translate(-translationDirection * Time.deltaTime * translationSpeedMultiplier, Space.World);
+		// Translate towards the position1
+		if(state)
+			{
+				transform.position = Vector3.MoveTowards(transform.position, position1, Time.deltaTime * translationSpeedMultiplier);
 			}
-		} else {
-			// Then the object should be translating to position2
-			if ( Vector3.Distance(position2, transform.position) > Vector3.kEpsilon * 4000){
-				transform.Translate(translationDirection * Time.deltaTime * translationSpeedMultiplier, Space.World);
-			}
+		// Translate towards the position2
+		else {
+			transform.position = Vector3.MoveTowards(transform.position, position2, Time.deltaTime * translationSpeedMultiplier);
 		}
 	}
 

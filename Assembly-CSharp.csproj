@@ -52,6 +52,7 @@
      <Compile Include="Assets\Scripts\Character Controllers\FirstPersonController.cs" />
      <Compile Include="Assets\Scripts\Character Controllers\HeadBob.cs" />
      <Compile Include="Assets\Scripts\Character Controllers\MouseLook.cs" />
+     <Compile Include="Assets\Scripts\Checkpoint.cs" />
      <Compile Include="Assets\Scripts\ControlsList.cs" />
      <Compile Include="Assets\Scripts\Death.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />

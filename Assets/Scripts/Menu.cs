@@ -81,6 +81,7 @@ public class Menu : MonoBehaviour {
 	public void GoToMainMenu() {
 		mainUI.enabled = true;
 		levelSelectionUI.enabled = false;
+		highScoresUI.enabled = false;
 	}
 	/****
 		End of Level Selection Section
@@ -92,7 +93,7 @@ public class Menu : MonoBehaviour {
 
 	public void setupHighScoresForLevel(int i){
 		var times = LoadPreviousTimes("Level " + i.ToString());
-		var topTwenty = times.OrderBy(time => time.time).Take(20);
+		var topTen = times.OrderBy(time => time.time).Take(10);
 		Text timesLabel;
 		switch (i){
 			case 1:
@@ -106,7 +107,7 @@ public class Menu : MonoBehaviour {
 				break;
 		}
 		timesLabel.text = "";
-		foreach (var time in topTwenty) {
+		foreach (var time in topTen) {
 			//speedText.text = "Vitesse : " + System.Math.Round((decimal)playerRigidbody.velocity.magnitude, 2).ToString();
 			timesLabel.text += System.Math.Round(time.time, 3) + "\n";
 		}

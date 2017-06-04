@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine.SceneManagement;
 
 public class GameManager : UnityEngine.MonoBehaviour {
 
@@ -20,12 +21,14 @@ public class GameManager : UnityEngine.MonoBehaviour {
 	private MouseLook cameraController;
 	private RigidbodyFirstPersonController playerController;
 	public Timer timer;
-	public String playerName;
+	// TODO add a management of several player, need to add a textField in the main Menu
+	//public String playerName;
     private Boolean isPause;
     public Canvas gameUI;
     public Canvas pauseUI;
     private Animator UiAnimator;
 	public Boolean checkpointReached;
+	private String sceneName;
 
 
 	void Start () {
@@ -35,6 +38,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		playerController = player.GetComponent<RigidbodyFirstPersonController>();
         UiAnimator = pauseUI.GetComponent<Animator>();
 		checkpointReached = false;
+		sceneName = SceneManager.GetActiveScene().name;
 		DisplayPreviousTimes();
 	}
 
@@ -105,7 +109,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
 	}
 	public List<PlayerTimeEntry> LoadPreviousTimes() {
 		try {
-			var scoresFile = Application.persistentDataPath + "/" + playerName + "_times.dat";
+			var scoresFile = Application.persistentDataPath + "/" + "player1" + sceneName + "_times.dat";
 			using (var stream = File.Open(scoresFile, FileMode.Open)) {
 				var bin = new BinaryFormatter();
 				var times = (List<PlayerTimeEntry>)bin.Deserialize(stream);
@@ -113,7 +117,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
 			}
 		}
 		catch (IOException ex) {
-			Debug.LogWarning("Couldn’t load previous times for: " + playerName + ". Exception: " + ex.Message);
+			Debug.LogWarning("Couldn’t load previous times for: " + "player1" + ". Exception: " + ex.Message);
 			return new List<PlayerTimeEntry>();
 		}
 	}
@@ -127,7 +131,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		newTime.time = (Decimal)time;
 		var bFormatter = new BinaryFormatter();
         Debug.Log(Application.persistentDataPath);
-		var filePath = Application.persistentDataPath + "/" + playerName + "_times.dat";
+		var filePath = Application.persistentDataPath + "/" + "player1" + sceneName + "_times.dat";
         Debug.Log("Timer time: " + time);
         Debug.Log("Time registered: " + newTime.time);
 		using (var file = File.Open(filePath, FileMode.Create)) {

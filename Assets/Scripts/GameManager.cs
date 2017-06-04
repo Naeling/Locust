@@ -67,6 +67,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
         if (isPause)
         {
             Time.timeScale = 0;
+			playerController.mouseLook.SetCursorLock(false);
             if (gameUI.enabled)
             {
                 gameUI.enabled = false;
@@ -79,6 +80,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
         else
         {
             Time.timeScale = 1;
+			playerController.mouseLook.SetCursorLock(true);
             if (!gameUI.enabled)
             {
                 gameUI.enabled = true;
@@ -141,11 +143,15 @@ public class GameManager : UnityEngine.MonoBehaviour {
 	}
 	public void DisplayPreviousTimes() {
 		var times = LoadPreviousTimes();
-		var topThree = times.OrderBy(time => time.time).Take(20);
+		var topTen = times.OrderBy(time => time.time).Take(10);
 		var timesLabel = GameObject.Find("HighScoresList").GetComponent<Text>();
 		timesLabel.text = "";
-		foreach (var time in topThree) {
+		foreach (var time in topTen) {
 			timesLabel.text += time.time + "\n";
 		}
+	}
+
+	public void GoToMainMenu(){
+		SceneManager.LoadScene("MainMenu");
 	}
 }

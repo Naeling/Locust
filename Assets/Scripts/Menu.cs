@@ -67,13 +67,13 @@ public class Menu : MonoBehaviour {
 	*****/
 
 	public void StartLevel1() {
-		SceneManager.LoadScene("Level 1");
+		SceneManager.LoadScene("Level1");
 	}
 	public void StartLevel2() {
-		SceneManager.LoadScene("Level 2");
+		SceneManager.LoadScene("Level2");
 	}
 	public void StartLevel(int levelNumber) {
-		SceneManager.LoadScene("Level " + levelNumber.ToString());
+		SceneManager.LoadScene("Level" + levelNumber.ToString());
 	}
 	public void LevelNotAvailable() {
 		Debug.Log("The requested level is not available yet");
@@ -92,7 +92,7 @@ public class Menu : MonoBehaviour {
 	*****/
 
 	public void setupHighScoresForLevel(int i){
-		var times = LoadPreviousTimes("Level " + i.ToString());
+		var times = LoadPreviousTimes("Level" + i.ToString());
 		var topTen = times.OrderBy(time => time.time).Take(10);
 		Text timesLabel;
 		switch (i){

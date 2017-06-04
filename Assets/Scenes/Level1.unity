@@ -909,6 +909,11 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114364638216278026, guid: 1102621211f24ef40ba227c6e2b765a1,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1857149710}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1102621211f24ef40ba227c6e2b765a1, type: 2}
   m_IsPrefabParent: 0
@@ -2536,6 +2541,10 @@ Prefab:
       propertyPath: player
       value: 
       objectReference: {fileID: 2092775950}
+    - target: {fileID: 1102230193609156, guid: bcbb46c7734b898479df11c09818ccc0, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bcbb46c7734b898479df11c09818ccc0, type: 2}
   m_IsPrefabParent: 0

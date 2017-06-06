@@ -47,7 +47,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		{
 			Restart();
 		}
-        if (CrossPlatformInputManager.GetButtonDown("Pause"))
+        if (CrossPlatformInputManager.GetButtonDown("Cancel"))
         {
             isPause = !isPause;
             if (isPause)

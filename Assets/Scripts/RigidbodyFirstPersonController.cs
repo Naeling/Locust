@@ -110,6 +110,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public Boolean jumpWithTrigger;
         public Boolean isPause;
         public Boolean m_Switch;
+        public Boolean automaticMode;
 
         public List<ObjectSwitcher> switchables;
 
@@ -165,46 +166,51 @@ namespace UnityStandardAssets.Characters.FirstPerson
             jumpWithTrigger = false;
             isPause = false;
             m_Switch = false;
+            automaticMode = false;
+
+            Immobilize();
         }
 
 
         private void Update()
         {
-            RotateView();
+            if (!automaticMode){
+                RotateView();
 
-            if ((CrossPlatformInputManager.GetButtonDown("Jump") || CrossPlatformInputManager.GetAxis("Jump") == 1  ) && !m_Jump)
-            {
-                if (CrossPlatformInputManager.GetAxis("Jump") == 1 && jumpWithTrigger == false)
+                if ((CrossPlatformInputManager.GetButtonDown("Jump") || CrossPlatformInputManager.GetAxis("Jump") == 1  ) && !m_Jump)
                 {
-                    m_Jump = true;
-                    jumpWithTrigger = true;
-                } else if (CrossPlatformInputManager.GetAxis("Jump") == 0)
-                {
-                    m_Jump = true;
+                    if (CrossPlatformInputManager.GetAxis("Jump") == 1 && jumpWithTrigger == false)
+                    {
+                        m_Jump = true;
+                        jumpWithTrigger = true;
+                    } else if (CrossPlatformInputManager.GetAxis("Jump") == 0)
+                    {
+                        m_Jump = true;
+                    }
                 }
-            }
 
 
-            if ((CrossPlatformInputManager.GetButton("Turbo") || CrossPlatformInputManager.GetAxis("Turbo") == 1) && !m_Turbo) {
-                //Debug.Log("Turbo requested");
-                m_Turbo = true;
-            } else {
-                // Reload Turbo
-                if (turboPoints < turboMax && !m_Turbo){
-                    turboPoints += Time.deltaTime * turboReloadMultiplier;
-                    if (turboPoints > turboMax)
-                        turboPoints = turboMax;
+                // TODO only reload the turbo while in mid air ? Wall running ?
+                if ((CrossPlatformInputManager.GetButton("Turbo") || CrossPlatformInputManager.GetAxis("Turbo") == 1) && !m_Turbo) {
+                    m_Turbo = true;
+                } else {
+                    // Reload Turbo
+                    if (turboPoints < turboMax && !m_Turbo){
+                        turboPoints += Time.deltaTime * turboReloadMultiplier;
+                        if (turboPoints > turboMax)
+                            turboPoints = turboMax;
+                    }
                 }
-            }
 
-            if (Input.GetMouseButtonDown(0) || CrossPlatformInputManager.GetButton("Switch") && !m_Switch){
-                Debug.Log ("Switch input received");
-                m_Switch = true;
-                foreach(ObjectSwitcher switcher in switchables){
-                    switcher.Switch();
+                if (Input.GetMouseButtonDown(0) || CrossPlatformInputManager.GetButton("Switch") && !m_Switch){
+                    Debug.Log ("Switch input received");
+                    m_Switch = true;
+                    foreach(ObjectSwitcher switcher in switchables){
+                        switcher.Switch();
+                    }
+                } else if (!Input.GetMouseButton(0) && !CrossPlatformInputManager.GetButton("Switch")) {
+                    m_Switch = false;
                 }
-            } else if (!Input.GetMouseButton(0) && !CrossPlatformInputManager.GetButton("Switch")) {
-                m_Switch = false;
             }
         }
 
@@ -330,7 +336,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     m_RigidBody.drag = 0f;
                     // INITIALIZE WALL RIDE
                     if (IsWallToLeftOrRight() && movementSettings.Running && !isWallRunning && !hasJustWallJumped){
-                        //Debug.Log("WALLRIDE INITIALIZED");
                         wallRunTimer = 0;
                         Vector3 forward = cam.transform.forward;
                         wallJumpTimer = 0f;
@@ -391,7 +396,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     // Landing
                     if (m_PreviouslyGrounded && !m_Jumping)
                     {
-                        StickToGroundHelper();
+                        //StickToGroundHelper();
                     }
                 }
                 // test if the player was wallRunning on the last frame and isn't on the current frame to rotate the camera back
@@ -411,6 +416,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     jumpWithTrigger = false;
                 }
             }
+            //Debug.Log("Speed : " + m_RigidBody.velocity);
         }
 
         private float SlopeMultiplier()
@@ -437,12 +443,16 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private Vector2 GetInput()
         {
-
-            Vector2 input = new Vector2
+            Vector2 input;
+            if (!automaticMode){
+            input = new Vector2
                 {
                     x = CrossPlatformInputManager.GetAxis("Horizontal"),
                     y = CrossPlatformInputManager.GetAxis("Vertical")
                 };
+            } else {
+                input = new Vector2();
+            }
 			movementSettings.UpdateDesiredTargetSpeed(input);
             return input;
         }
@@ -494,6 +504,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_RigidBody.velocity = new Vector3();
             m_RigidBody.useGravity = false;
             immobilize = true;
+        }
+
+        public void NoControl(){
+            automaticMode = true;
+        }
+
+        public void Move(){
+            m_RigidBody.useGravity = true;
+            immobilize = false;
         }
         public Boolean IsWallToLeftOrRight(){
             //Debug.Log(mask);

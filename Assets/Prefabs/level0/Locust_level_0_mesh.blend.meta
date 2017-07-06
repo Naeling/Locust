@@ -238,6 +238,10 @@ ModelImporter:
     100460: wall_rider_045
     100462: wall_rider_046
     100464: wall_rider_047
+    100466: Plane
+    100468: ground_collider_000
+    100470: wall_rider_000
+    100472: wall
     400000: ceiling_002
     400002: ceiling_004
     400004: collider
@@ -471,6 +475,10 @@ ModelImporter:
     400460: wall_rider_045
     400462: wall_rider_046
     400464: wall_rider_047
+    400466: Plane
+    400468: ground_collider_000
+    400470: wall_rider_000
+    400472: wall
     2300000: ceiling_002
     2300002: ceiling_004
     2300004: collider
@@ -681,6 +689,11 @@ ModelImporter:
     2300414: wall_rider_045
     2300416: wall_rider_046
     2300418: wall_rider_047
+    2300420: Plane
+    2300422: //RootNode
+    2300424: ground_collider_000
+    2300426: wall_rider_000
+    2300428: wall
     3300000: ceiling_002
     3300002: ceiling_004
     3300004: collider
@@ -891,6 +904,11 @@ ModelImporter:
     3300414: wall_rider_045
     3300416: wall_rider_046
     3300418: wall_rider_047
+    3300420: Plane
+    3300422: //RootNode
+    3300424: ground_collider_000
+    3300426: wall_rider_000
+    3300428: wall
     4300000: death_collider_024
     4300002: death_collider_021
     4300004: death_collider_020
@@ -1101,6 +1119,10 @@ ModelImporter:
     4300414: wall_rider
     4300416: ground_collider_004
     4300418: wall_rider_017
+    4300420: Plane
+    4300422: wall_rider_000
+    4300424: ground_collider_000
+    4300426: wall
     7400000: Default Take
     9500000: //RootNode
   materials:

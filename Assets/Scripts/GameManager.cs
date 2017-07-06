@@ -14,6 +14,8 @@ using UnityEngine.SceneManagement;
 public class GameManager : UnityEngine.MonoBehaviour {
 
 	public GameObject player;
+	public GameObject firstEndPoint;
+	public GameObject secondEndPoint;
 	private Transform playerTransform;
 	private Rigidbody playerRigidbody;
 	public Transform spawnPoint;
@@ -29,6 +31,15 @@ public class GameManager : UnityEngine.MonoBehaviour {
     private Animator UiAnimator;
 	public Boolean checkpointReached;
 	private String sceneName;
+	private Boolean introFinished;
+	private Boolean conclusionStarted;
+	public AudioSource backgroundMusic;
+	public Boolean isGoingToLevelEnd;
+	public Boolean doorReached;
+	public Boolean endReached;
+	public String nextLevel;
+
+
 
 
 	void Start () {
@@ -40,6 +51,13 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		checkpointReached = false;
 		sceneName = SceneManager.GetActiveScene().name;
 		DisplayPreviousTimes();
+
+		SoundManager.Instance.PlayOneShot(SoundManager.Instance.intro);
+		introFinished = false;
+		conclusionStarted = false;
+		isGoingToLevelEnd = false;
+		doorReached = false;
+		endReached = false;
 	}
 
 	void Update () {
@@ -90,7 +108,34 @@ public class GameManager : UnityEngine.MonoBehaviour {
                 pauseUI.enabled = false;
             }
         }
+
+		// Allow the player to move when the dialog ends
+		if (!SoundManager.Instance.GetAudioSource().isPlaying && !introFinished){
+			Move();
+			backgroundMusic.volume = 0.1f;
+			introFinished = true;
+		}
+
+		if(!SoundManager.Instance.GetAudioSource().isPlaying && conclusionStarted ){
+			SceneManager.LoadScene(nextLevel);
+		}
     }
+
+	void FixedUpdate(){
+		if (isGoingToLevelEnd){
+			if (!doorReached){
+				player.transform.LookAt(firstEndPoint.transform);
+				Vector3 direction = Vector3.MoveTowards(player.transform.position, firstEndPoint.transform.position, Time.fixedDeltaTime * 5f);
+				direction.y = player.transform.position.y;
+				player.transform.position = direction;
+			} else if (!endReached){
+				player.transform.LookAt(secondEndPoint.transform);
+				Vector3 direction = Vector3.MoveTowards(player.transform.position, secondEndPoint.transform.position, Time.fixedDeltaTime * 5f);
+				direction.y = player.transform.position.y;
+				player.transform.position = direction;
+			}
+		}
+	}
 
 	public void Restart () {
 		playerController.immobilize = false;
@@ -108,6 +153,22 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		playerTransform.rotation = Quaternion.identity * qTo;
 		timer.Reset();
 		timer.Stop();
+	}
+
+	public void Move(){
+		playerController.Move();
+	}
+	public void Immobilize(){
+		playerController.Immobilize();
+	}
+	public void NoControl(){
+		playerController.NoControl();
+	}
+
+	public void EndDialog(){
+		SoundManager.Instance.PlayOneShot(SoundManager.Instance.conclusion);
+		backgroundMusic.Stop();
+		conclusionStarted = true;
 	}
 	public List<PlayerTimeEntry> LoadPreviousTimes() {
 		try {

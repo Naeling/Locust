@@ -336,6 +336,58 @@ ModelImporter:
     100656: wall_rider_046
     100658: wall_rider_047
     100660: collider_115
+    100662: ground_collider_023
+    100664: ground_collider_024
+    100666: ground_collider_025
+    100668: ground_collider_026
+    100670: ground_collider_027
+    100672: ground_collider_028
+    100674: ground_collider_029
+    100676: ground_collider_030
+    100678: switchable_025
+    100680: switchable_026
+    100682: switchable_027
+    100684: switchable_028
+    100686: switchable_029
+    100688: switchable_030
+    100690: switchable_031
+    100692: switchable_032
+    100694: switchable_033
+    100696: switchable_034
+    100698: switchable_035
+    100700: switchable_036
+    100702: switchable_037
+    100704: switchable_038
+    100706: switchable_039
+    100708: switchable_040
+    100710: switchable_041
+    100712: switchable_042
+    100714: switchable_043
+    100716: switchable_044
+    100718: switchable_045
+    100720: switchable_046
+    100722: wall
+    100724: wall_rider_048
+    100726: wall_rider_049
+    100728: wall_rider_050
+    100730: wall_rider_051
+    100732: wall_rider_052
+    100734: wall_rider_053
+    100736: wall_rider_054
+    100738: wall_rider_055
+    100740: wall_rider_056
+    100742: wall_rider_057
+    100744: wall_rider_058
+    100746: wall_rider_059
+    100748: wall_rider_060
+    100750: wall_rider_061
+    100752: wall_rider_062
+    100754: wall_rider_063
+    100756: collider_ground
+    100758: collider_ground_001
+    100760: collider_116
+    100762: collider_ground_002
+    100764: collider_ground_003
     400000: background_000
     400002: background_001
     400004: background_002
@@ -667,6 +719,58 @@ ModelImporter:
     400656: wall_rider_046
     400658: wall_rider_047
     400660: collider_115
+    400662: ground_collider_023
+    400664: ground_collider_024
+    400666: ground_collider_025
+    400668: ground_collider_026
+    400670: ground_collider_027
+    400672: ground_collider_028
+    400674: ground_collider_029
+    400676: ground_collider_030
+    400678: switchable_025
+    400680: switchable_026
+    400682: switchable_027
+    400684: switchable_028
+    400686: switchable_029
+    400688: switchable_030
+    400690: switchable_031
+    400692: switchable_032
+    400694: switchable_033
+    400696: switchable_034
+    400698: switchable_035
+    400700: switchable_036
+    400702: switchable_037
+    400704: switchable_038
+    400706: switchable_039
+    400708: switchable_040
+    400710: switchable_041
+    400712: switchable_042
+    400714: switchable_043
+    400716: switchable_044
+    400718: switchable_045
+    400720: switchable_046
+    400722: wall
+    400724: wall_rider_048
+    400726: wall_rider_049
+    400728: wall_rider_050
+    400730: wall_rider_051
+    400732: wall_rider_052
+    400734: wall_rider_053
+    400736: wall_rider_054
+    400738: wall_rider_055
+    400740: wall_rider_056
+    400742: wall_rider_057
+    400744: wall_rider_058
+    400746: wall_rider_059
+    400748: wall_rider_060
+    400750: wall_rider_061
+    400752: wall_rider_062
+    400754: wall_rider_063
+    400756: collider_ground
+    400758: collider_ground_001
+    400760: collider_116
+    400762: collider_ground_002
+    400764: collider_ground_003
     2300000: background_000
     2300002: background_001
     2300004: background_002
@@ -967,6 +1071,58 @@ ModelImporter:
     2300594: wall_rider_046
     2300596: wall_rider_047
     2300598: collider_115
+    2300600: ground_collider_023
+    2300602: ground_collider_024
+    2300604: ground_collider_025
+    2300606: ground_collider_026
+    2300608: ground_collider_027
+    2300610: ground_collider_028
+    2300612: ground_collider_029
+    2300614: ground_collider_030
+    2300616: switchable_003
+    2300618: switchable_004
+    2300620: switchable_005
+    2300622: switchable_006
+    2300624: switchable_007
+    2300626: switchable_008
+    2300628: switchable_009
+    2300630: switchable_010
+    2300632: switchable_033
+    2300634: switchable_034
+    2300636: switchable_035
+    2300638: switchable_036
+    2300640: switchable_037
+    2300642: switchable_038
+    2300644: switchable_039
+    2300646: switchable_040
+    2300648: switchable_041
+    2300650: switchable_042
+    2300652: switchable_043
+    2300654: switchable_044
+    2300656: switchable_045
+    2300658: switchable_046
+    2300660: wall
+    2300662: wall_rider_048
+    2300664: wall_rider_049
+    2300666: wall_rider_050
+    2300668: wall_rider_051
+    2300670: wall_rider_052
+    2300672: wall_rider_053
+    2300674: wall_rider_054
+    2300676: wall_rider_055
+    2300678: wall_rider_056
+    2300680: wall_rider_057
+    2300682: wall_rider_058
+    2300684: wall_rider_059
+    2300686: wall_rider_060
+    2300688: wall_rider_061
+    2300690: wall_rider_062
+    2300692: wall_rider_063
+    2300694: collider_ground
+    2300696: collider_ground_001
+    2300698: collider_116
+    2300700: collider_ground_002
+    2300702: collider_ground_003
     3300000: background_000
     3300002: background_001
     3300004: background_002
@@ -1267,6 +1423,58 @@ ModelImporter:
     3300594: wall_rider_046
     3300596: wall_rider_047
     3300598: collider_115
+    3300600: ground_collider_023
+    3300602: ground_collider_024
+    3300604: ground_collider_025
+    3300606: ground_collider_026
+    3300608: ground_collider_027
+    3300610: ground_collider_028
+    3300612: ground_collider_029
+    3300614: ground_collider_030
+    3300616: switchable_003
+    3300618: switchable_004
+    3300620: switchable_005
+    3300622: switchable_006
+    3300624: switchable_007
+    3300626: switchable_008
+    3300628: switchable_009
+    3300630: switchable_010
+    3300632: switchable_033
+    3300634: switchable_034
+    3300636: switchable_035
+    3300638: switchable_036
+    3300640: switchable_037
+    3300642: switchable_038
+    3300644: switchable_039
+    3300646: switchable_040
+    3300648: switchable_041
+    3300650: switchable_042
+    3300652: switchable_043
+    3300654: switchable_044
+    3300656: switchable_045
+    3300658: switchable_046
+    3300660: wall
+    3300662: wall_rider_048
+    3300664: wall_rider_049
+    3300666: wall_rider_050
+    3300668: wall_rider_051
+    3300670: wall_rider_052
+    3300672: wall_rider_053
+    3300674: wall_rider_054
+    3300676: wall_rider_055
+    3300678: wall_rider_056
+    3300680: wall_rider_057
+    3300682: wall_rider_058
+    3300684: wall_rider_059
+    3300686: wall_rider_060
+    3300688: wall_rider_061
+    3300690: wall_rider_062
+    3300692: wall_rider_063
+    3300694: collider_ground
+    3300696: collider_ground_001
+    3300698: collider_116
+    3300700: collider_ground_002
+    3300702: collider_ground_003
     4300000: movable_001
     4300002: movable
     4300004: ground_017
@@ -1567,6 +1775,58 @@ ModelImporter:
     4300594: ground_collider_014
     4300596: death_collider_007
     4300598: collider_115
+    4300600: switchable_036
+    4300602: switchable_039
+    4300604: switchable_040
+    4300606: switchable_037
+    4300608: switchable_042
+    4300610: switchable_043
+    4300612: switchable_035
+    4300614: switchable_038
+    4300616: switchable_041
+    4300618: switchable_044
+    4300620: switchable_006
+    4300622: switchable_045
+    4300624: switchable_008
+    4300626: switchable_034
+    4300628: switchable_010
+    4300630: switchable_005
+    4300632: switchable_046
+    4300634: switchable_007
+    4300636: switchable_033
+    4300638: switchable_009
+    4300640: wall_rider_048
+    4300642: wall
+    4300644: switchable_003
+    4300646: switchable_004
+    4300648: wall_rider_063
+    4300650: ground_collider_030
+    4300652: wall_rider_062
+    4300654: wall_rider_061
+    4300656: ground_collider_029
+    4300658: wall_rider_060
+    4300660: wall_rider_059
+    4300662: ground_collider_028
+    4300664: wall_rider_058
+    4300666: wall_rider_057
+    4300668: ground_collider_027
+    4300670: wall_rider_056
+    4300672: wall_rider_051
+    4300674: ground_collider_024
+    4300676: wall_rider_050
+    4300678: wall_rider_049
+    4300680: ground_collider_023
+    4300682: wall_rider_055
+    4300684: ground_collider_026
+    4300686: wall_rider_054
+    4300688: wall_rider_053
+    4300690: ground_collider_025
+    4300692: wall_rider_052
+    4300694: collider_ground_001
+    4300696: collider_ground
+    4300698: collider_116
+    4300700: collider_ground_003
+    4300702: collider_ground_002
     7400000: Default Take
     9500000: //RootNode
   materials:

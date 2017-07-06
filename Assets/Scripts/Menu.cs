@@ -40,7 +40,7 @@ public class Menu : MonoBehaviour {
 
 	// TODO change the instruction to launch the first cinematic
 	public void StartGame() {
-		StartLevel(1);
+		StartIntro();
 	}
 
 	public void GoToLevelSelection(){
@@ -57,6 +57,9 @@ public class Menu : MonoBehaviour {
 		Application.Quit();
 	}
 
+	public void StartIntro() {
+		SceneManager.LoadScene("Intro");
+	}
 	/****
 		End of Main Menu Section
 	*****/

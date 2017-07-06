@@ -1,0 +1,192 @@
+fileFormatVersion: 2
+guid: cb280c2faa211ab4697f056a0b8b01f2
+timeCreated: 1496795472
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: chamber
+    100002: chamber.001
+    100004: chamber.002
+    100006: chamber.003
+    100008: chamber.004
+    100010: chamber.005
+    100012: chamber.006
+    100014: chamber.007
+    100016: chamber.008
+    100018: cryo_chamber_closed.001
+    100020: cryo_chamber_open.001
+    100022: door_frame
+    100024: door_frame.001
+    100026: door_left
+    100028: door_left.001
+    100030: door_lock
+    100032: door_lock.001
+    100034: door_right
+    100036: door_right.001
+    100038: //RootNode
+    100040: Plane
+    100042: collider
+    100044: collider.001
+    100046: collider.002
+    100048: collider_collector
+    100050: door_collider
+    100052: door_collider.001
+    100054: door_parent
+    100056: door trigger
+    100058: collider.003
+    400000: chamber
+    400002: chamber.001
+    400004: chamber.002
+    400006: chamber.003
+    400008: chamber.004
+    400010: chamber.005
+    400012: chamber.006
+    400014: chamber.007
+    400016: chamber.008
+    400018: cryo_chamber_closed.001
+    400020: cryo_chamber_open.001
+    400022: door_frame
+    400024: door_frame.001
+    400026: door_left
+    400028: door_left.001
+    400030: door_lock
+    400032: door_lock.001
+    400034: door_right
+    400036: door_right.001
+    400038: //RootNode
+    400040: Plane
+    400042: collider
+    400044: collider.001
+    400046: collider.002
+    400048: collider_collector
+    400050: door_collider
+    400052: door_collider.001
+    400054: door_parent
+    400056: door trigger
+    400058: collider.003
+    2300000: chamber
+    2300002: cryo_chamber_closed.001
+    2300004: cryo_chamber_open.001
+    2300006: door_frame
+    2300008: door_frame.001
+    2300010: door_left
+    2300012: door_left.001
+    2300014: door_lock
+    2300016: door_lock.001
+    2300018: door_right
+    2300020: door_right.001
+    2300022: Plane
+    2300024: collider
+    2300026: collider.001
+    2300028: collider.002
+    2300030: door_collider
+    2300032: door_collider.001
+    2300034: door trigger
+    2300036: collider.003
+    3300000: chamber
+    3300002: cryo_chamber_closed.001
+    3300004: cryo_chamber_open.001
+    3300006: door_frame
+    3300008: door_frame.001
+    3300010: door_left
+    3300012: door_left.001
+    3300014: door_lock
+    3300016: door_lock.001
+    3300018: door_right
+    3300020: door_right.001
+    3300022: Plane
+    3300024: collider
+    3300026: collider.001
+    3300028: collider.002
+    3300030: door_collider
+    3300032: door_collider.001
+    3300034: door trigger
+    3300036: collider.003
+    4300000: Plane
+    4300002: door_right.001
+    4300004: door_left.001
+    4300006: door_lock.001
+    4300008: door_left
+    4300010: door_frame
+    4300012: door_right
+    4300014: cryo_chamber_open.001
+    4300016: door_frame.001
+    4300018: cryo_chamber_closed.001
+    4300020: chamber
+    4300022: collider.002
+    4300024: collider
+    4300026: collider.001
+    4300028: door_collider.001
+    4300030: door_lock
+    4300032: door_collider
+    4300034: door trigger
+    4300036: collider.003
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

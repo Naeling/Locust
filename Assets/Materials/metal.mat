@@ -78,7 +78,7 @@ Material:
     m_Floats:
     - first:
         name: <noninit>
-      second: 1
+      second: 0
     - first:
         name: _BumpScale
       second: 1
@@ -93,7 +93,7 @@ Material:
       second: 0
     - first:
         name: _GlossMapScale
-      second: 0.5
+      second: 1
     - first:
         name: _Glossiness
       second: 0.5
@@ -102,7 +102,7 @@ Material:
       second: 1
     - first:
         name: _Metallic
-      second: 0.522
+      second: 0
     - first:
         name: _Mode
       second: 0
@@ -130,7 +130,7 @@ Material:
     m_Colors:
     - first:
         name: <noninit>
-      second: {r: 0.5661765, g: 0.5661765, b: 0.5661765, a: 1}
+      second: {r: 0, g: 6.6631566e-35, b: 0, a: 6.66312e-35}
     - first:
         name: _Color
       second: {r: 1, g: 1, b: 1, a: 1}

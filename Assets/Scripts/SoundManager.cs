@@ -5,10 +5,11 @@ using UnityEngine;
 public class SoundManager : MonoBehaviour {
 
 	public static SoundManager Instance = null;
-	private AudioSource soundEffectAudio;
+	private AudioSource audioSource;
 
 	public AudioClip death;
-
+	public AudioClip intro;
+	public AudioClip conclusion;
 
 	// Use this for initialization
 	void Start () {
@@ -17,10 +18,16 @@ public class SoundManager : MonoBehaviour {
 		} else if (Instance != this) {
 			Destroy(gameObject);
 		}
-		soundEffectAudio = GetComponent<AudioSource>();
+		audioSource = GetComponent<AudioSource>();
+
 	}
 
 	public void PlayOneShot(AudioClip clip){
-		soundEffectAudio.PlayOneShot(clip);
+		audioSource.PlayOneShot(clip);
 	}
+
+	public AudioSource GetAudioSource(){
+		return audioSource;
+	}
+
 }

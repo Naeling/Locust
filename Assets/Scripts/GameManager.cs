@@ -38,6 +38,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
 	public Boolean doorReached;
 	public Boolean endReached;
 	public String nextLevel;
+    public Boolean shouldPlayIntro = true;   // By default, the intro is played, except when specified in the inspector for debug purpose
 
 
 
@@ -52,9 +53,12 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		sceneName = SceneManager.GetActiveScene().name;
 		DisplayPreviousTimes();
 
-		SoundManager.Instance.PlayOneShot(SoundManager.Instance.intro);
-		introFinished = false;
-		conclusionStarted = false;
+        if (shouldPlayIntro)
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.intro);
+        }
+        introFinished = false;
+        conclusionStarted = false;
 		isGoingToLevelEnd = false;
 		doorReached = false;
 		endReached = false;
@@ -138,10 +142,10 @@ public class GameManager : UnityEngine.MonoBehaviour {
 	}
 
 	public void Restart () {
-		playerController.immobilize = false;
+		playerController.Immobilize();
 		playerRigidbody.useGravity = true;
 		cameraController.resetRotations();
-		playerController.turboPoints = 0f;
+		playerController.SetTurboPoints(0f);
 		playerRigidbody.velocity = new Vector3();
 		if (!checkpointReached){
 			playerTransform.position = spawnPoint.position;

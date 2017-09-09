@@ -15,9 +15,7 @@ public class Turbo : UnityEngine.MonoBehaviour {
 	}
 
 	void Update () {
-		// Vector3 oldScale = turboBar.localScale;
-		// Need to get the current Turbo points from the controller Object
-		float turboPoints = playerController.turboPoints;
+		float turboPoints = playerController.GetTurboPoints();
 		turboBar.localScale = new Vector3(turboPoints * UiScaleMultiplier, turboBar.localScale.y);
 	}
 }

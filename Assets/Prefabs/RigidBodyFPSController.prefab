@@ -141,9 +141,26 @@ MonoBehaviour:
     ForwardSpeed: 8
     BackwardSpeed: 4
     StrafeSpeed: 4
+    WallRunMaxSpeed: 24
     RunMultiplier: 2
+    WallRunForce: 100
+    AerialSlowDownMultiplier: 3
+    WallRunSlowDownMultiplier: 0.3
     RunKey: 304
-    JumpForce: 100
+    JumpForce: 15
+    JumpThreshold: 0.25
+    WallRunThreshold: 10
+    RotationSpeedOnWall: 35
+    WallRunAngle: 10
+    MaxWallRunCompensationForce: 8.01
+    WallRunDrag: 0.15
+    WallRunFallingThresholdSpeed: 15
+    WallRunNoCompensationThresholdSpeed: 10
+    WallJumpHorizontalForce: 60
+    WallRunCoolDown: 0.4
+    MaxTurboPoints: 100
+    TurboReloadMultiplier: 9
+    turboConsumptionMultiplier: 30
     SlopeCurveModifier:
       serializedVersion: 2
       m_Curve:
@@ -184,31 +201,9 @@ MonoBehaviour:
     slowDownRate: 20
     airControl: 1
     shellOffset: 0
-  immobilize: 0
-  radius: 0
-  rayCastLengthCheck: 0
   layer:
     serializedVersion: 2
     m_Bits: 512
-  isWallRunning: 0
-  hasJustWallJumped: 0
-  hasDoubleJumped: 0
-  wallJumpTimer: 0
-  wallJumpDelay: 0.3
-  wallJumpUpMultiplier: 1
-  previouslyWallRunning: 0
-  wallRunTimer: 0
-  wallRunDelay: 0.2
-  turboPoints: 0
-  turboReloadMultiplier: 9
-  turboMax: 100
-  turboConsumptionMultiplier: 30
-  airControlMultiplier: 0.3
-  jumpWithTrigger: 0
-  isPause: 0
-  m_Switch: 0
-  automaticMode: 0
-  switchables: []
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -359,6 +354,20 @@ Light:
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
+  m_FalloffTable:
+    m_Table[0]: 0
+    m_Table[1]: 0
+    m_Table[2]: 0
+    m_Table[3]: 0
+    m_Table[4]: 0
+    m_Table[5]: 0
+    m_Table[6]: 0
+    m_Table[7]: 0
+    m_Table[8]: 0
+    m_Table[9]: 0
+    m_Table[10]: 0
+    m_Table[11]: 0
+    m_Table[12]: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0

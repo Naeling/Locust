@@ -259,7 +259,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Controls
+  m_Text: Commandes
 --- !u!114 &114342893808801880
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -292,7 +292,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Best Times
+  m_Text: Meilleurs temps
 --- !u!114 &114364638216278026
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -377,11 +377,13 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Jump / WallJump: Space Bar
+  m_Text: 'Saut / Saut mural: Barre d''espace / Bouton A / RT (Xbox)
 
-    Turbo: Shift
+    Turbo: Maj / LT (Xbox)
 
-    Restart: R'
+    Recommencer: R / Bouton Y (Xbox)
+
+    Changement de position: Clique gauche / LB (Xbox)'
 --- !u!114 &114505932321163798
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -722,7 +724,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 350, y: 200}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 180, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224780427190817188
 RectTransform:

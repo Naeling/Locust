@@ -56,6 +56,10 @@ public class Menu : MonoBehaviour {
 		Application.Quit();
 	}
 
+    public void Credits()
+    {
+        SceneManager.LoadScene("EndingScreen");
+    }
 	public void StartIntro() {
         ApplicationModel.shouldPlayIntroDialogue = true;
         ApplicationModel.levelSelectionMode = false;

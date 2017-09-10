@@ -146,8 +146,15 @@ public class GameManager : UnityEngine.MonoBehaviour {
 
 		if(!SoundManager.Instance.GetAudioSource().isPlaying && conclusionStarted ){
             dialogueIsPlaying = false;
-            SceneManager.LoadScene(nextLevel);
-		}
+            if (nextLevel == "EndingScreen")
+            {
+                gameUI.transform.Find("ToBeContinuedText").gameObject.SetActive(true);
+                StartCoroutine("GoToCredits");
+            } else
+            {
+                SceneManager.LoadScene(nextLevel);
+            }
+        }
     }
 
 	void FixedUpdate(){
@@ -251,5 +258,11 @@ public class GameManager : UnityEngine.MonoBehaviour {
         yield return new WaitForSeconds(3);
         gameUI.transform.Find("SkipText").gameObject.SetActive(false);
         wantToSkipDialogue = false;
+    }
+
+    IEnumerator GoToCredits()
+    {
+        yield return new WaitForSeconds(3);
+        SceneManager.LoadScene(nextLevel);
     }
 }

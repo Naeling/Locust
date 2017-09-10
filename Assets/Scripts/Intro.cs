@@ -59,7 +59,6 @@ public class Intro : MonoBehaviour {
 
 	IEnumerator NextLevelTimer() {
         yield return new WaitForSeconds(3);
-        ApplicationModel.intro = false;
 		SceneManager.LoadScene("Level0");
     }
 

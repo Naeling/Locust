@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityStandardAssets.Characters.FirstPerson;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class Intro : MonoBehaviour {
 
@@ -11,19 +12,39 @@ public class Intro : MonoBehaviour {
 	public Image blackBackground;
 	public RigidbodyFirstPersonController playerController;
 	public Animator doorAnimator;
+    private bool wantToSkipDialogue;
+    public GameObject skipText;
 
-	// Use this for initialization
-	void Start () {
+    void Start () {
 		audioSource = GetComponent<AudioSource>();
 		audioSource.Play();
 	}
 
-	// Update is called once per frame
 	void Update () {
+
 		if (!audioSource.isPlaying){
 			doorAnimator.SetBool("introFinished", true);
 			playerController.Move();
-		}
+		} else
+        {
+            if (wantToSkipDialogue)
+            {
+                if (CrossPlatformInputManager.GetButtonDown("Cancel"))
+                {
+                    audioSource.Stop();
+                    skipText.SetActive(false);
+                }
+            }
+            else
+            {
+                if (CrossPlatformInputManager.GetButtonDown("Jump"))
+                {
+                    wantToSkipDialogue = true;
+                    skipText.SetActive(true);
+                    StartCoroutine("HideSkipText");
+                }
+            }
+        }
 	}
 
 	public void IntroScreen() {
@@ -38,6 +59,14 @@ public class Intro : MonoBehaviour {
 
 	IEnumerator NextLevelTimer() {
         yield return new WaitForSeconds(3);
+        ApplicationModel.intro = false;
 		SceneManager.LoadScene("Level0");
+    }
+
+    IEnumerator HideSkipText()
+    {
+        yield return new WaitForSeconds(3);
+        skipText.SetActive(false);
+        wantToSkipDialogue = false;
     }
 }

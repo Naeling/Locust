@@ -38,11 +38,10 @@ public class GameManager : UnityEngine.MonoBehaviour {
 	public Boolean doorReached;
 	public Boolean endReached;
 	public String nextLevel;
+    private bool dialogueIsPlaying;
+    private bool wantToSkipDialogue;
 
-
-
-
-	void Start () {
+    void Start () {
 		playerTransform = player.GetComponent<Transform>();
 		playerRigidbody = player.GetComponent<Rigidbody>();
 		cameraController = player.GetComponent<RigidbodyFirstPersonController>().mouseLook;
@@ -54,6 +53,10 @@ public class GameManager : UnityEngine.MonoBehaviour {
         if (ApplicationModel.shouldPlayIntroDialogue)
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.intro);
+            dialogueIsPlaying = true;
+        } else
+        {
+            dialogueIsPlaying = false;
         }
 		introFinished = false;
 		conclusionStarted = false;
@@ -63,10 +66,12 @@ public class GameManager : UnityEngine.MonoBehaviour {
 	}
 
 	void Update () {
+
 		if (CrossPlatformInputManager.GetButtonDown("Restart"))
 		{
 			Restart();
 		}
+
         if (CrossPlatformInputManager.GetButtonDown("Cancel"))
         {
             isPause = !isPause;
@@ -82,6 +87,27 @@ public class GameManager : UnityEngine.MonoBehaviour {
                 UiAnimator.SetBool("isDepaused", true);
                 UiAnimator.SetBool("isPaused", false);
             }
+        }
+
+        if (dialogueIsPlaying)
+        {
+            if (wantToSkipDialogue)
+            {
+                if (CrossPlatformInputManager.GetButtonDown("Cancel"))
+                {
+                    SoundManager.Instance.GetAudioSource().Stop();
+                    gameUI.transform.Find("SkipText").gameObject.SetActive(false);
+                }
+            } else
+            {
+                if (CrossPlatformInputManager.GetButtonDown("Jump"))
+                {
+                    wantToSkipDialogue = true;
+                    gameUI.transform.Find("SkipText").gameObject.SetActive(true);
+                    StartCoroutine("HideSkipText");
+
+                }
+            }  
         }
 
         if (isPause)
@@ -111,15 +137,16 @@ public class GameManager : UnityEngine.MonoBehaviour {
             }
         }
 
-		// Allow the player to move when the dialog ends
 		if (!SoundManager.Instance.GetAudioSource().isPlaying && !introFinished){
 			Move();
 			backgroundMusic.volume = 0.1f;
 			introFinished = true;
+            dialogueIsPlaying = false;
 		}
 
 		if(!SoundManager.Instance.GetAudioSource().isPlaying && conclusionStarted ){
-			SceneManager.LoadScene(nextLevel);
+            dialogueIsPlaying = false;
+            SceneManager.LoadScene(nextLevel);
 		}
     }
 
@@ -171,6 +198,7 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		SoundManager.Instance.PlayOneShot(SoundManager.Instance.conclusion);
 		backgroundMusic.Stop();
 		conclusionStarted = true;
+        dialogueIsPlaying = true;
 	}
 	public List<PlayerTimeEntry> LoadPreviousTimes() {
 		try {
@@ -217,4 +245,11 @@ public class GameManager : UnityEngine.MonoBehaviour {
 	public void GoToMainMenu(){
 		SceneManager.LoadScene("MainMenu");
 	}
+
+    IEnumerator HideSkipText()
+    {
+        yield return new WaitForSeconds(3);
+        gameUI.transform.Find("SkipText").gameObject.SetActive(false);
+        wantToSkipDialogue = false;
+    }
 }

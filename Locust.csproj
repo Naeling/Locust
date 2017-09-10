@@ -99,6 +99,7 @@
     <Compile Include="Assets\SampleScenes\Menu\Scripts\MenuSceneLoader.cs" />
     <Compile Include="Assets\SampleScenes\Menu\Scripts\PauseMenu.cs" />
     <Compile Include="Assets\SampleScenes\Menu\Scripts\SceneAndURLLoader.cs" />
+    <Compile Include="Assets\Scripts\ApplicationModel.cs" />
     <Compile Include="Assets\Scripts\Character Controllers\FirstPersonController.cs" />
     <Compile Include="Assets\Scripts\Character Controllers\HeadBob.cs" />
     <Compile Include="Assets\Scripts\Character Controllers\MouseLook.cs" />

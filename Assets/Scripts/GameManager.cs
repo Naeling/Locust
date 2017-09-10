@@ -67,12 +67,12 @@ public class GameManager : UnityEngine.MonoBehaviour {
 
 	void Update () {
 
-		if (CrossPlatformInputManager.GetButtonDown("Restart"))
+		if (CrossPlatformInputManager.GetButtonDown("Restart") && !playerController.immobilize)
 		{
 			Restart();
 		}
 
-        if (CrossPlatformInputManager.GetButtonDown("Cancel"))
+        if (CrossPlatformInputManager.GetButtonDown("Cancel") && !dialogueIsPlaying)
         {
             isPause = !isPause;
             if (isPause)

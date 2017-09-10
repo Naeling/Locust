@@ -14,7 +14,6 @@ public class Death : MonoBehaviour {
     {
         if (other.CompareTag("Player"))
         {
-            //Restart the level
             timer.Stop();
             playerController.Immobilize();
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.death);

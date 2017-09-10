@@ -11,31 +11,38 @@ public class Goal : MonoBehaviour {
 
 
 	void OnTriggerEnter (Collider other){
-		//TODO launch an automatic movement towards the last room, and the last dialog here
 		if (other.CompareTag("Player")){
 			timer.Stop();
-			// Save the time
             gameManager.SaveTime();
-			// Display the win text
 			winText.gameObject.SetActive(true);
 			winText.text = "Test complet.\n Congratulations for not dying. \n Your test sequence was achieved in:";
 			winText.text += System.Math.Round((decimal)timer.GetTimer(), 2).ToString();
 
 			gameManager.NoControl();
-			StartCoroutine("goToLevelEndTimer");
-			// Restart
-			//StartCoroutine("restartTimer");
-		}
+            if (ApplicationModel.levelSelectionMode)
+            {
+                StartCoroutine("GoToMainMenu");
+            }
+            else
+            {
+                StartCoroutine("GoToLevelEndTimer");
+            }
+        }
 	}
 
-
-	IEnumerator restartTimer() {
+	IEnumerator RestartTimer() {
         yield return new WaitForSeconds(4);
 		winText.gameObject.SetActive(false);
         gameManager.Restart();
     }
-	IEnumerator goToLevelEndTimer(){
+	IEnumerator GoToLevelEndTimer(){
 		yield return new WaitForSeconds(1);
 		gameManager.isGoingToLevelEnd = true;
 	}
+    IEnumerator GoToMainMenu()
+    {
+        yield return new WaitForSeconds(3);
+        gameManager.GoToMainMenu();
+    }
+
 }

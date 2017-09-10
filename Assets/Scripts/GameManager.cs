@@ -51,8 +51,10 @@ public class GameManager : UnityEngine.MonoBehaviour {
 		checkpointReached = false;
 		sceneName = SceneManager.GetActiveScene().name;
 		DisplayPreviousTimes();
-
-		SoundManager.Instance.PlayOneShot(SoundManager.Instance.intro);
+        if (ApplicationModel.shouldPlayIntroDialogue)
+        {
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.intro);
+        }
 		introFinished = false;
 		conclusionStarted = false;
 		isGoingToLevelEnd = false;

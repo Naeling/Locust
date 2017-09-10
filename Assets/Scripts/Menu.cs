@@ -29,7 +29,7 @@ public class Menu : MonoBehaviour {
 
 		// Setup the highscores list
 		for (int i = 1; i <= 2; i++){
-			setupHighScoresForLevel(i);
+			SetupHighScoresForLevel(i);
 		}
 	}
 
@@ -38,7 +38,6 @@ public class Menu : MonoBehaviour {
 		Start of Main Menu Section
 	*****/
 
-	// TODO change the instruction to launch the first cinematic
 	public void StartGame() {
 		StartIntro();
 	}
@@ -58,7 +57,9 @@ public class Menu : MonoBehaviour {
 	}
 
 	public void StartIntro() {
-		SceneManager.LoadScene("Intro");
+        ApplicationModel.shouldPlayIntroDialogue = true;
+        ApplicationModel.levelSelectionMode = false;
+        SceneManager.LoadScene("Intro");
 	}
 	/****
 		End of Main Menu Section
@@ -70,13 +71,15 @@ public class Menu : MonoBehaviour {
 	*****/
 
 	public void StartLevel1() {
-		SceneManager.LoadScene("Level1");
+        SceneManager.LoadScene("Level1");
 	}
 	public void StartLevel2() {
 		SceneManager.LoadScene("Level2");
 	}
 	public void StartLevel(int levelNumber) {
-		SceneManager.LoadScene("Level" + levelNumber.ToString());
+        ApplicationModel.shouldPlayIntroDialogue = false;
+        ApplicationModel.levelSelectionMode = true;
+        SceneManager.LoadScene("Level" + levelNumber.ToString());
 	}
 	public void LevelNotAvailable() {
 		Debug.Log("The requested level is not available yet");
@@ -94,7 +97,7 @@ public class Menu : MonoBehaviour {
 		Start of HighScores List Section
 	*****/
 
-	public void setupHighScoresForLevel(int i){
+	public void SetupHighScoresForLevel(int i){
 		var times = LoadPreviousTimes("Level" + i.ToString());
 		var topTen = times.OrderBy(time => time.time).Take(10);
 		Text timesLabel;

@@ -19,7 +19,7 @@ public class Timer : MonoBehaviour {
 		if (isRunning){
 			timer += Time.deltaTime;
 		}
-		timerText.text = "Time : " + System.Math.Round((decimal)timer, 2).ToString();
+		timerText.text = "Temps : " + System.Math.Round((decimal)timer, 2).ToString();
 	}
 	public void Go(){
 		isRunning = true;

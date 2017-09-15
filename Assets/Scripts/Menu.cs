@@ -23,10 +23,7 @@ public class Menu : MonoBehaviour {
 	public Text level2HighScoresText;
 
 	void Start() {
-		mainUI.enabled = true;
-		levelSelectionUI.enabled = false;
-		highScoresUI.enabled = false;
-
+        GoToMainMenu();
 		// Setup the highscores list
 		for (int i = 1; i <= 2; i++){
 			SetupHighScoresForLevel(i);
@@ -118,7 +115,6 @@ public class Menu : MonoBehaviour {
 		}
 		timesLabel.text = "";
 		foreach (var time in topTen) {
-			//speedText.text = "Vitesse : " + System.Math.Round((decimal)playerRigidbody.velocity.magnitude, 2).ToString();
 			timesLabel.text += System.Math.Round(time.time, 3) + "\n";
 		}
 	}

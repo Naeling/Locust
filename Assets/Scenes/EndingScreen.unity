@@ -324,7 +324,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Directeur ludique: Killian Sanfin'
+  m_Text: 'Game director: Killian Sanfin'
 --- !u!222 &434936772
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -398,7 +398,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Directeur artistique: Valentin Cecchin'
+  m_Text: 'Artistic director: Valentin Cecchin'
 --- !u!222 &591995900
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -673,7 +673,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Musique: Speed Machine
+  m_Text: 'Music: Speed Machine
 
 '
 --- !u!222 &660925429
@@ -905,7 +905,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "DIalogues: Killian Sanfins, R\xE9mi Divita, Louis Groisne"
+  m_Text: "Dialogs: Killian Sanfins, R\xE9mi Divita, Louis Groisne"
 --- !u!222 &853531790
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1419,7 +1419,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Directeur technique: Louis Groisne'
+  m_Text: 'Technical director: Louis Groisne'
 --- !u!222 &1335305173
 CanvasRenderer:
   m_ObjectHideFlags: 0

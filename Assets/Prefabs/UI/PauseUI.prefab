@@ -259,7 +259,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Commandes
+  m_Text: Controls
 --- !u!114 &114342893808801880
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -292,7 +292,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Meilleurs temps
+  m_Text: Highscores
 --- !u!114 &114364638216278026
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -377,13 +377,13 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Saut / Saut mural: Barre d''espace / Bouton A / RT (Xbox)
+  m_Text: 'Jump / Wall jump: space / A button / RT (Xbox)
 
-    Turbo: Maj / LT (Xbox)
+    Turbo: shift / LT (Xbox)
 
-    Recommencer: R / Bouton Y (Xbox)
+    Restart: R / Y button (Xbox)
 
-    Changement de position: Clique gauche / LB (Xbox)'
+    Switch position: left click / LB (Xbox)'
 --- !u!114 &114505932321163798
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -443,7 +443,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Retour au menu principal
+  m_Text: Return to main menu
 --- !u!114 &114606519234533512
 MonoBehaviour:
   m_ObjectHideFlags: 1

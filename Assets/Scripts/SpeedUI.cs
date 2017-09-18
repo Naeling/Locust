@@ -20,6 +20,6 @@ public class SpeedUI : UnityEngine.MonoBehaviour {
 	void Update () {
 		//speedText.text = "Vitesse : " + System.Math.Round((decimal)playerRigidbody.velocity.magnitude, 2).ToString();
 		Vector3 forwardSpeed = Vector3.Project(playerRigidbody.velocity, player.transform.forward);
-		speedText.text = "Vitesse : " + ((int)forwardSpeed.magnitude).ToString();
+		speedText.text = "Speed : " + ((int)forwardSpeed.magnitude).ToString();
 	}
 }

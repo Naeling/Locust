@@ -644,7 +644,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: '
 
-    RETOUR
+    BACK
 
 '
 --- !u!222 &471212441
@@ -1410,7 +1410,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: '
 
-    Niveau 2
+    Level 2
 
 '
 --- !u!222 &827363782
@@ -1969,7 +1969,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: '
 
-    RETOUR AU BUREAU
+    QUIT
 
 '
 --- !u!222 &1220076824
@@ -2167,7 +2167,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Niveau 2
+  m_Text: Level 2
 --- !u!222 &1399773094
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2365,7 +2365,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: '
 
-    MODE HISTOIRE
+    STORY MODE
 
 '
 --- !u!222 &1460060350
@@ -2603,7 +2603,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: '
 
-    Retour
+    Back
 
 '
 --- !u!222 &1652019829
@@ -2679,7 +2679,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: MEILLEURS SCORES
+  m_Text: HIGHSCORES
 --- !u!222 &1662019169
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2791,7 +2791,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Niveau 1
+  m_Text: Level 1
 --- !u!222 &1734758737
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2867,7 +2867,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: '
 
-    Niveau 1
+    Level 1
 
 '
 --- !u!222 &1925209630
@@ -2943,7 +2943,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Selection du niveau
+  m_Text: 'Level selection
 
 '
 --- !u!222 &1942577976
@@ -3095,7 +3095,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: '
 
-    CHOIX DU NIVEAU
+    LEVEL SELECTION
 
 '
 --- !u!222 &2032139165

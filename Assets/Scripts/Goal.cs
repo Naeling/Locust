@@ -15,7 +15,7 @@ public class Goal : MonoBehaviour {
 			timer.Stop();
             gameManager.SaveTime();
 			winText.gameObject.SetActive(true);
-			winText.text = "Test complet.\n Congratulations for not dying. \n Your test sequence was achieved in:";
+			winText.text = "Test terminé.\n Félicitation d'être resté en vie. \n Votre séquence de test a été terminée en:";
 			winText.text += System.Math.Round((decimal)timer.GetTimer(), 2).ToString();
 
 			gameManager.NoControl();
